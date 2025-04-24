@@ -1,9 +1,11 @@
 import { RouteRecordRaw } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
-import CalendarView from '../views/CalendarView.vue'
+import MonthView from '../views/MonthView.vue'
+import WeekView from '../views/WeekView.vue'
 import CreateReservation from '../views/CreateReservation.vue'
 import ReservationDetails from '../views/ReservationDetails.vue'
 import EditReservation from '../views/EditReservation.vue'
+import PruebasView from '../views/PruebasView.vue'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -12,9 +14,19 @@ export const routes: RouteRecordRaw[] = [
     component: HomePage
   },
   {
-    path: '/calendar',
-    name: 'calendar',
-    component: CalendarView
+    path: '/mensual',
+    name: 'mensual',
+    component: MonthView
+  },
+  {
+    path: '/semanal',
+    name: 'semanal',
+    component: WeekView
+  },
+  {
+    path: '/pruebas',
+    name: 'pruebas',
+    component: PruebasView
   },
   {
     path: '/reservations/create',

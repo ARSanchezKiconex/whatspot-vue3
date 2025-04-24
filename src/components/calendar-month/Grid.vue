@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, parseISO } from 'date-fns'
 import { useReservationStore } from '../../stores/reservationStore'
-import { CalendarDay } from '../../types'
-import CalendarDayComponent from './CalendarDay.vue'
+import { DayType } from '../../types'
+import Day from './Day.vue'
 
 const props = defineProps<{
   currentMonth: Date
@@ -29,7 +29,7 @@ const calendarDays = computed(() => {
   
   const daysWithReservations = reservationStore.getDaysWithReservations(month, year)
   
-  const days: CalendarDay[] = []
+  const days: Day[] = []
   let day = startDate
   
   while (day <= endDate) {
@@ -66,7 +66,7 @@ const calendarDays = computed(() => {
     
     <!-- Calendar days -->
     <div class="grid grid-cols-7">
-      <CalendarDayComponent 
+      <Day 
         v-for="(day, index) in calendarDays" 
         :key="index"
         :day="day"

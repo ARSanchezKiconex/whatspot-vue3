@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { format } from 'date-fns'
-import { CalendarDay } from '../../types'
+import { DayType } from '../../types'
 
 const props = defineProps<{
-  day: CalendarDay
+  day: DayType
   selected: boolean
 }>()
 

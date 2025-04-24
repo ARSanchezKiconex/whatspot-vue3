@@ -37,7 +37,7 @@ export interface TimeSlot {
   endTime: string
 }
 
-export interface CalendarDay {
+export interface DayType {
   date: Date
   dayOfMonth: number
   isCurrentMonth: boolean

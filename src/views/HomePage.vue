@@ -13,7 +13,7 @@ import ReservationList from '../components/reservation/ReservationList.vue'
           Easily book, manage and track your reservations with our intuitive calendar system.
         </p>
         <div class="flex flex-wrap gap-4">
-          <RouterLink to="/calendar" class="px-6 py-3 bg-white text-primary-600 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          <RouterLink to="/mensual" class="px-6 py-3 bg-white text-primary-600 rounded-lg font-medium hover:bg-gray-100 transition-colors">
             View Calendar
           </RouterLink>
           <RouterLink to="/reservations/create" class="px-6 py-3 bg-accent-500 text-white rounded-lg font-medium hover:bg-accent-600 transition-colors">

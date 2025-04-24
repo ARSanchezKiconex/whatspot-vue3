@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { format, addMonths, subMonths, startOfMonth, isSameDay } from 'date-fns'
 import { useRouter } from 'vue-router'
-import CalendarHeader from '../components/calendar/CalendarHeader.vue'
-import CalendarGrid from '../components/calendar/CalendarGrid.vue'
+import CalendarMonthHeader from '../components/calendar-month/Header.vue'
+import CalendarMonthGrid from '../components/calendar-month/Grid.vue'
 import ReservationList from '../components/reservation/ReservationList.vue'
 
 const router = useRouter()
@@ -51,14 +51,14 @@ const handleCreateReservation = () => {
           </button>
         </div>
         
-        <CalendarHeader 
+        <CalendarMonthHeader 
           :current-month="currentMonth"
           @prev-month="handlePrevMonth"
           @next-month="handleNextMonth"
           @today="handleToday"
         />
         
-        <CalendarGrid 
+        <CalendarMonthGrid 
           :current-month="currentMonth"
           :selected-date="selectedDate"
           @select-date="handleSelectDate"
