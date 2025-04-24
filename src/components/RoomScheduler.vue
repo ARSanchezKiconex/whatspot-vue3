@@ -5,12 +5,13 @@
       view="week"
       :views="['day', 'week', 'month']"
       :disable-views="['year', 'years']"
-      :time-from="7 * 60"
-      :time-to="21 * 60"
-      :time-step="15"
+      :time="false"
       :resources="resources"
+      hideWeekends
+      locale="es"
+      :cellContextmenu="true"
       :events="events"
-      :editable-events="true"
+      :editable-events="false"
       @event-change="onEventChange"
       @cell-click="onCellClick"
       class="vuecal--blue-theme"
@@ -74,12 +75,14 @@ const events = computed(() =>
   }))
 )
 
-const resources = computed(() =>
-  rooms.value.map(room => ({
-    id: room.id,
-    label: room.name,
-  }))
-)
+// Computed property para obtener todas las salas de todos los edificios
+const resources = [
+  { id: '1', name: 'Conference Room A' },
+  { id: '2', name: 'Meeting Room 1' },
+  { id: '3', name: 'Creative Studio' },
+  { id: '4', name: 'Quiet Room' }
+]
+
 
 function onEventChange(event: any) {
   reservationStore.updateReservation(event.id, {
