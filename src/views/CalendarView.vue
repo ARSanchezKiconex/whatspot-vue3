@@ -1,15 +1,18 @@
 <template>
   <div id="app">
+    <!-- <CalendarSettings /> -->
     <CalendarView />
   </div>
 </template>
 
 <script>
-import CalendarView from '../components/componente-de-0/CalendarComponent.vue'
+import CalendarView from '../components/CalendarComponent.vue'
+// import CalendarSettings from '../components/CalendarSettings.vue'
 
 export default {
   components: {
-    CalendarView
+    CalendarView,
+    // CalendarSettings
   }
 }
 </script>

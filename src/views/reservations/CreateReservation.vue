@@ -2,8 +2,8 @@
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { parseISO } from 'date-fns'
-import { useReservationStore } from '../stores/reservationStore'
-import ReservationForm from '../components/reservation/ReservationForm.vue'
+import { useReservationStore } from '../../stores/reservationStore'
+import ReservationForm from '../../components/reservation/ReservationForm.vue'
 import { Reservation } from '../types'
 
 const route = useRoute()

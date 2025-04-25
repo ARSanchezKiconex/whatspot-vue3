@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { format } from 'date-fns'
-import { useReservationStore } from '../stores/reservationStore'
+import { useReservationStore } from '../../stores/reservationStore'
 
 const props = defineProps<{
   day: Date

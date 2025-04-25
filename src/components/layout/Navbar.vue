@@ -23,20 +23,14 @@ const toggleMobileMenu = () => {
           <RouterLink to="/" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
             Inicio
           </RouterLink>
-          <RouterLink to="/mensual" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Mensual
+          <RouterLink to="/calendar" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
+            Calendario
           </RouterLink>
-          <RouterLink to="/semanal" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Semanal
-          </RouterLink>
-          <RouterLink to="/calendario-de-0" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Calendario Pruebas
-          </RouterLink>
-          <RouterLink to="/pruebas2" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Pruebas 2
+          <RouterLink to="/calendarGemini" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
+            Calendario Gemini
           </RouterLink>
           <RouterLink to="/reservations/create" class="py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
-            Book Now
+            Reservar
           </RouterLink>
         </div>
         
@@ -55,16 +49,10 @@ const toggleMobileMenu = () => {
           Inicio
         </RouterLink>
         <RouterLink to="/mensual" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">
-          Mensual
-        </RouterLink>
-        <RouterLink to="/semanal" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">
-          Semanal
-        </RouterLink>
-        <RouterLink to="/pruebas" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">
-          Pruebas
+          Calendario
         </RouterLink>
         <RouterLink to="/reservations/create" class="block py-2 px-3 mt-2 bg-primary-500 text-white rounded-md hover:bg-primary-600">
-          Book Now
+          Reservar
         </RouterLink>
       </div>
     </nav>
