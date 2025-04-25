@@ -1,12 +1,10 @@
 import { RouteRecordRaw } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
-import MonthView from '../views/MonthView.vue'
-import WeekView from '../views/WeekView.vue'
-import CreateReservation from '../views/CreateReservation.vue'
-import ReservationDetails from '../views/ReservationDetails.vue'
-import EditReservation from '../views/EditReservation.vue'
-import CalendarioDe0 from '../views/CalendarView.vue'
-import PruebasView2 from '../views/PruebasView2.vue'
+import CreateReservation from '../views/reservations/CreateReservation.vue'
+import ReservationDetails from '../views/reservations/ReservationDetails.vue'
+import EditReservation from '../views/reservations/EditReservation.vue'
+import CalendarView from '../views/CalendarView.vue'
+import CalendarViewGemini from '../views/CalendarViewGemini.vue'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -15,24 +13,14 @@ export const routes: RouteRecordRaw[] = [
     component: HomePage
   },
   {
-    path: '/mensual',
-    name: 'mensual',
-    component: MonthView
+    path: '/calendar',
+    name: 'calendar',
+    component: CalendarView
   },
   {
-    path: '/semanal',
-    name: 'semanal',
-    component: WeekView
-  },
-  {
-    path: '/calendario-de-0',
-    name: 'calendario-de-0',
-    component: CalendarioDe0
-  },
-  {
-    path: '/pruebas2',
-    name: 'pruebas2',
-    component: PruebasView2
+    path: '/calendarGemini',
+    name: 'calendarGemini',
+    component: CalendarViewGemini
   },
   {
     path: '/reservations/create',

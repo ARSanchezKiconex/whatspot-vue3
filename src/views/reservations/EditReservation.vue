@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useReservationStore } from '../stores/reservationStore'
-import ReservationForm from '../components/reservation/ReservationForm.vue'
+import { useReservationStore } from '../../stores/reservationStore'
 import { Reservation } from '../types'
 
 const route = useRoute()

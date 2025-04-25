@@ -24,22 +24,19 @@
 </template>
 
 <script>
-import DayView from './DayView.vue'
-import WeekView from './WeekView.vue'
-import MonthView from './MonthView.vue'
+import DayView from './calendar-day/Day.vue'
+import WeekView from './calendar-week/Week.vue'
 
 export default {
   components: {
     DayView,
     WeekView,
-    MonthView
   },
   data() {
     return {
       currentView: 'week', // Vista por defecto
       selectedDate: new Date(), // Fecha seleccionada
       selectedWeek: new Date(), // Semana seleccionada
-      selectedMonth: new Date(), // Mes seleccionado
       rooms: [
         // Lista de salas (podrías obtenerla de una API o de tu store)
         // Edificio Intarcon
