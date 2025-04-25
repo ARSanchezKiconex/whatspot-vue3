@@ -5,7 +5,8 @@ import WeekView from '../views/WeekView.vue'
 import CreateReservation from '../views/CreateReservation.vue'
 import ReservationDetails from '../views/ReservationDetails.vue'
 import EditReservation from '../views/EditReservation.vue'
-import PruebasView from '../views/PruebasView.vue'
+import CalendarioDe0 from '../views/CalendarView.vue'
+import PruebasView2 from '../views/PruebasView2.vue'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -24,9 +25,14 @@ export const routes: RouteRecordRaw[] = [
     component: WeekView
   },
   {
-    path: '/pruebas',
-    name: 'pruebas',
-    component: PruebasView
+    path: '/calendario-de-0',
+    name: 'calendario-de-0',
+    component: CalendarioDe0
+  },
+  {
+    path: '/pruebas2',
+    name: 'pruebas2',
+    component: PruebasView2
   },
   {
     path: '/reservations/create',

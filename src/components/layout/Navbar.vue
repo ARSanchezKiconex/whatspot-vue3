@@ -29,8 +29,11 @@ const toggleMobileMenu = () => {
           <RouterLink to="/semanal" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
             Semanal
           </RouterLink>
-          <RouterLink to="/pruebas" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Pruebas
+          <RouterLink to="/calendario-de-0" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
+            Calendario Pruebas
+          </RouterLink>
+          <RouterLink to="/pruebas2" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
+            Pruebas 2
           </RouterLink>
           <RouterLink to="/reservations/create" class="py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
             Book Now
