@@ -13,7 +13,6 @@
     "date-fns": "^2.30.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.38",
-    "vue-cal": "^4.10.2",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
