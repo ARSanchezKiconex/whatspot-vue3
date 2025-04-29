@@ -26,12 +26,6 @@ const toggleMobileMenu = () => {
           <RouterLink to="/calendar" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
             Calendario
           </RouterLink>
-          <RouterLink to="/calendarGemini" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Calendario Gemini
-          </RouterLink>
-          <RouterLink to="/reservations/create" class="py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
-            Reservar
-          </RouterLink>
         </div>
         
         <!-- Mobile menu button -->
