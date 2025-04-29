@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import ReservationList from '../components/reservation/ReservationList.vue'
 </script>
 
 <template>
