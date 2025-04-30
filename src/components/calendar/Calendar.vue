@@ -308,7 +308,7 @@ watch(selectedDate, (newDate) => { /* ... */ });
 
 .fab-add-event {
   position: fixed; /* O fixed si quieres que esté fijo en la ventana */
-  bottom: 30px;
+  bottom: 60px;
   right: 30px;
   width: 56px;
   height: 56px;

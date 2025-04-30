@@ -27,7 +27,6 @@ import { RouterLink } from 'vue-router'
           View All
         </RouterLink>
       </div>
-      <ReservationList :limit="3" />
     </section>
     
     <!-- Features section -->
