@@ -45,12 +45,15 @@
           :selected-date="selectedDate"
           :resources="filteredResources" :events="filteredEvents"       />
       </div>
+        <div>
+          <el-button class="fab-add-event" @click="openEventModal()" title="Crear Nueva Reserva">
+            <el-icon :size="size" :color="color">
+              <Plus />
+            </el-icon>
+          </el-button>
+        </div>
 
-        <button class="fab-add-event" @click="openEventModal()" title="Crear Nueva Reserva">
-         +
-        </button>
-
-    </div> <EventFormModal
+    </div> <BookFormModal
       :show="isModalVisible"
       :initial-data="modalInitialData"
       :all-resources="allResources"
@@ -58,7 +61,7 @@
       @save-event="handleSaveEvent"
     />
 
-    </div>
+  </div>
 </template>
 
 <script setup>
@@ -69,7 +72,7 @@ import WeekView from './WeekView.vue';
 import DayView from './DayView.vue';
 import MiniMonthView from './MiniMonthView.vue'; // Importar MiniMonthView
 import ResourceFilter from '../filters/ResourceFilter.vue'; // Importar ResourceFilter
-import EventFormModal from '../modals/EventFormModal.vue'; // Importar el modal
+import BookFormModal from '../modals/BookFormModal.vue'; // Importar el modal
 import { v4 as uuidv4 } from 'uuid'; // Importar librería para IDs únicos (npm install uuid)
 
 // --- Datos Originales (no los modificaremos directamente) ---
@@ -244,12 +247,13 @@ watch(selectedDate, (newDate) => { /* ... */ });
 <style scoped>
 .calendar-layout {
   display: flex;
-  height: calc(100vh - 40px); /* Altura ejemplo, ajustar según tu app */
-  max-width: 1400px; /* Ancho máximo */
-  margin: 20px auto;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  height: 100vh; /* 100% de la altura de la ventana */
+  width: 100vw; /* 100% del ancho de la ventana */
+  max-width: none; /* Eliminar el ancho máximo */
+  margin: 0; /* Eliminar márgenes */
+  border: none; /* Eliminar borde si no lo deseas a pantalla completa */
+  border-radius: 0; /* Eliminar bordes redondeados a pantalla completa */
+  box-shadow: none; /* Eliminar sombra si no la deseas a pantalla completa */
   font-family: sans-serif;
   background-color: #f9f9f9; /* Fondo general ligero */
 }
@@ -262,12 +266,14 @@ watch(selectedDate, (newDate) => { /* ... */ });
   display: flex;
   flex-direction: column;
   padding: 15px 0px; /* Padding vertical, sin horizontal */
+  /* Si quieres que la barra lateral también ocupe toda la altura: */
+  height: 100%; /* O 100vh si el padre es 100vh */
 }
 /* Añadir margen interno a los componentes dentro del sidebar si es necesario */
 .sidebar > * {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 15px;
 }
 
 
@@ -275,6 +281,8 @@ watch(selectedDate, (newDate) => { /* ... */ });
   flex-grow: 1; /* Ocupa el resto del espacio */
   display: flex;
   flex-direction: column;
+  /* Si quieres que el contenido principal también ocupe toda la altura: */
+  height: 100%; /* O 100vh si el padre es 100vh */
 }
 
 .view-controls {
@@ -304,14 +312,16 @@ watch(selectedDate, (newDate) => { /* ... */ });
 .calendar-body {
     flex-grow: 1; /* El cuerpo del calendario ocupa el espacio restante */
     background-color: #fff; /* Fondo blanco para el area principal */
+    /* Si quieres que el cuerpo del calendario también ocupe toda la altura restante: */
+    height: 100%;
 }
 
 .fab-add-event {
   position: fixed; /* O fixed si quieres que esté fijo en la ventana */
   bottom: 60px;
   right: 30px;
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background-color: #007bff;
   color: white;
@@ -323,8 +333,5 @@ watch(selectedDate, (newDate) => { /* ... */ });
   cursor: pointer;
   z-index: 999; /* Asegurar que esté por encima del contenido */
   transition: background-color 0.2s ease;
-}
-.fab-add-event:hover {
-    background-color: #0056b3;
 }
 </style>

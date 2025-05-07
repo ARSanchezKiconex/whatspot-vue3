@@ -22,34 +22,57 @@
 
       <div class="form-group time-group">
         <div>
-            <label for="startDate">Fecha Inicio:</label>
-            <input type="date" id="startDate" v-model="formData.startDate" required />
+          <label for="startDate">Fecha Inicio:</label>
+          <el-date-picker
+            id="startDate"
+            v-model="formData.startDate"
+            type="date"
+            placeholder="Elige fecha"
+            style="width: 240px"
+            required
+          />
         </div>
-         <div>
-            <label for="startTime">Hora Inicio:</label>
-            <select id="startTime" v-model="formData.startTime" required>
-                <option disabled value="">Elige hora</option>
-                <option v-for="time in timeOptions" :key="time" :value="time">
-                    {{ time }}
-                </option>
-            </select>
-        </div>
+        <div>
+          <label for="startTime">Hora Inicio:</label>
+          <el-time-select
+            v-model="formData.startTime"
+            style="width: 240px"
+            :max-time="formData.endTime"
+            class="mr-4"
+            placeholder="Hora de inicio"
+            start="08:30"
+            step="00:15"
+            end="18:30"
+            required
+          />
+          </div>
       </div>
 
       <div class="form-group time-group">
         <div>
-            <label for="endDate">Fecha Fin:</label>
-            <input type="date" id="endDate" v-model="formData.endDate" required />
+          <label for="endDate">Fecha Fin:</label>
+          <el-date-picker
+            id="endDate"
+            v-model="formData.endDate"
+            type="date"
+            placeholder="Elige fecha"
+            style="width: 240px"
+            required
+          />
         </div>
-         <div>
-            <label for="endTime">Hora Fin:</label>
-             <select id="endTime" v-model="formData.endTime" required>
-                 <option disabled value="">Elige hora</option>
-                 <option v-for="time in timeOptions" :key="time" :value="time">
-                    {{ time }}
-                 </option>
-            </select>
-        </div>
+        <div>
+          <label for="endTime">Hora Fin:</label>
+          <el-time-select
+            v-model="formData.endTime"
+            style="width: 240px"
+            :min-time="formData.startTime"
+            placeholder="Hora de fin"
+            start="08:30"
+            step="00:15"
+            end="18:30"
+            required
+          />
+          </div>
       </div>
 
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
