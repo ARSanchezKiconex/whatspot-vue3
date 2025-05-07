@@ -26,6 +26,9 @@ const toggleMobileMenu = () => {
           <RouterLink to="/calendar" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
             Calendario
           </RouterLink>
+          <RouterLink to="/element-plus" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
+            Calendario Element Plus
+          </RouterLink>
         </div>
         
         <!-- Mobile menu button -->
@@ -41,12 +44,6 @@ const toggleMobileMenu = () => {
       <div v-show="isMobileMenuOpen" class="md:hidden mt-3 pb-3 space-y-1 animate-slide-up">
         <RouterLink to="/" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">
           Inicio
-        </RouterLink>
-        <RouterLink to="/mensual" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">
-          Calendario
-        </RouterLink>
-        <RouterLink to="/reservations/create" class="block py-2 px-3 mt-2 bg-primary-500 text-white rounded-md hover:bg-primary-600">
-          Reservar
         </RouterLink>
       </div>
     </nav>
