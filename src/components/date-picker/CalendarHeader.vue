@@ -1,7 +1,5 @@
 <template>
   <div class="calendar-header">
-    <button @click="$emit('previous')" class="nav-button">&lt;</button>
-
     <div class="current-display">
       <div v-if="view === 'month'" class="month-year">
         <span class="month">{{ currentMonth }}</span>
@@ -14,7 +12,9 @@
         {{ currentDay }} <span class="year">{{ currentYear }}</span>
       </div>
     </div>
-    <button @click="$emit('today')" class="nav-button today-button">Hoy</button> <button @click="$emit('next')" class="nav-button">&gt;</button>
+    <button @click="$emit('previous')" class="nav-button">&lt;</button>
+    <button @click="$emit('today')" class="nav-button today-button">Hoy</button> 
+    <button @click="$emit('next')" class="nav-button">&gt;</button>
   </div>
 </template>
 

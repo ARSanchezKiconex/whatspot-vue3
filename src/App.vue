@@ -9,10 +9,5 @@ import Navbar from './components/layout/Navbar.vue'
     <main class="flex-1 container mx-auto p-4 animate-fade-in">
       <RouterView />
     </main>
-    <footer class="bg-white py-4 border-t border-gray-200">
-      <div class="container mx-auto text-center text-sm text-gray-500">
-        <p>© {{ new Date().getFullYear() }} WhatsSpot. All rights reserved.</p>
-      </div>
-    </footer>
   </div>
 </template>

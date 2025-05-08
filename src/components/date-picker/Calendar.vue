@@ -6,6 +6,11 @@
         :all-resources="allResources"
         v-model:selected-building-ids="selectedBuildingIds"
       />
+      <el-button class="fab-add-event" @click="openMiniWeekViewModal()" title="Crear Nueva Reserva">
+        <el-icon :size="size" :color="color">
+          <Plus />
+        </el-icon>
+      </el-button>
     </div>
 
     <div class="main-content">
@@ -45,15 +50,15 @@
           :selected-date="selectedDate"
           :resources="filteredResources" :events="filteredEvents"       />
       </div>
-        <div>
-          <el-button class="fab-add-event" @click="openEventModal()" title="Crear Nueva Reserva">
-            <el-icon :size="size" :color="color">
-              <Plus />
-            </el-icon>
-          </el-button>
-        </div>
 
-    </div> <BookFormModal
+    </div> 
+    <MiniWeekViewModal
+      :show="isMiniWeekViewVisible"
+      :resources="filteredResources"
+      @close="closeMiniWeekViewModal"
+      @open-booking="handleOpenBookingForm"
+    />
+    <BookFormModal
       :show="isModalVisible"
       :initial-data="modalInitialData"
       :all-resources="allResources"
@@ -68,11 +73,12 @@
 import { ref, computed, watch } from 'vue';
 import CalendarHeader from './CalendarHeader.vue';
 import CalendarGrid from './CalendarGrid.vue';
-import WeekView from './WeekView.vue';
-import DayView from './DayView.vue';
-import MiniMonthView from './MiniMonthView.vue'; // Importar MiniMonthView
+import WeekView from '../views/WeekView.vue';
+import DayView from '../views/DayView.vue';
+import MiniMonthView from '../views/MiniMonthView.vue'; // Importar MiniMonthView
 import ResourceFilter from '../filters/ResourceFilter.vue'; // Importar ResourceFilter
 import BookFormModal from '../modals/BookFormModal.vue'; // Importar el modal
+import MiniWeekViewModal from '../modals/MiniWeekViewModal.vue'; // Importar el modal de vista semanal
 import { v4 as uuidv4 } from 'uuid'; // Importar librería para IDs únicos (npm install uuid)
 
 // --- Datos Originales (no los modificaremos directamente) ---
@@ -139,6 +145,25 @@ const filteredEvents = computed(() => {
     visibleResourceIds.has(event.resourceId)
   );
 });
+
+const isMiniWeekViewVisible = ref(false);
+
+const openMiniWeekViewModal = () => {
+  isMiniWeekViewVisible.value = true;
+};
+
+const closeMiniWeekViewModal = () => {
+  isMiniWeekViewVisible.value = false;
+};
+
+const handleOpenBookingForm = (payload) => {
+  const { date, resource } = payload;
+  openEventModal({
+    start: date,
+    end: new Date(date.getTime() + 60 * 60 * 1000), // Ejemplo: fin una hora después
+    resourceId: resource.id,
+  });
+};
 
 // --- Estado del Modal ---
 const isModalVisible = ref(false);
@@ -247,10 +272,9 @@ watch(selectedDate, (newDate) => { /* ... */ });
 <style scoped>
 .calendar-layout {
   display: flex;
-  height: 100vh; /* 100% de la altura de la ventana */
-  width: 100vw; /* 100% del ancho de la ventana */
+  height: 100%; /* 100% de la altura de la ventana */
+  width: 100%; /* 100% del ancho de la ventana */
   max-width: none; /* Eliminar el ancho máximo */
-  margin: 0; /* Eliminar márgenes */
   border: none; /* Eliminar borde si no lo deseas a pantalla completa */
   border-radius: 0; /* Eliminar bordes redondeados a pantalla completa */
   box-shadow: none; /* Eliminar sombra si no la deseas a pantalla completa */
@@ -269,12 +293,7 @@ watch(selectedDate, (newDate) => { /* ... */ });
   /* Si quieres que la barra lateral también ocupe toda la altura: */
   height: 100%; /* O 100vh si el padre es 100vh */
 }
-/* Añadir margen interno a los componentes dentro del sidebar si es necesario */
-.sidebar > * {
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 15px;
-}
+
 
 
 .main-content {
