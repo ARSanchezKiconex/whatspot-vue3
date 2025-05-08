@@ -1,337 +1,263 @@
 <template>
-  <dialog class="event-modal" :open="show" @close="closeModal">
-    <form @submit.prevent="submitForm">
-      <h3>{{ isEditing ? 'Editar Reserva' : 'Crear Nueva Reserva' }}</h3>
+  <el-dialog
+    v-model="show"
+    :title="isEditing ? 'Editar Reserva' : 'Crear Nueva Reserva'"
+    width="40%"
+    @close="closeModal"
+  >
+    <el-form
+      ref="ruleFormRef"
+      :model="formData"
+      :rules="rules"
+      label-width="120px"
+      class="event-form"
+      @submit.prevent="submitForm"
+    >
+      <el-form-item label="Título" prop="title">
+        <el-input v-model="formData.title" placeholder="Ingrese el título" />
+      </el-form-item>
 
-      <div class="form-group">
-        <label for="title">Título:</label>
-        <input type="text" id="title" v-model="formData.title" required />
-      </div>
+      <el-form-item label="Sala" prop="resourceId">
+        <el-select v-model="formData.resourceId" placeholder="Selecciona una sala">
+          <el-option-group
+            v-for="building in groupedResources"
+            :key="building.name"
+            :label="building.name"
+          >
+            <el-option
+              v-for="resource in building.resources"
+              :key="resource.id"
+              :label="resource.name"
+              :value="resource.id"
+            />
+          </el-option-group>
+        </el-select>
+      </el-form-item>
 
-      <div class="form-group">
-        <label for="resource">Sala:</label>
-        <select id="resource" v-model="formData.resourceId" required>
-          <option disabled value="">Selecciona una sala</option>
-          <optgroup v-for="building in groupedResources" :key="building.name" :label="building.name">
-            <option v-for="resource in building.resources" :key="resource.id" :value="resource.id">
-              {{ resource.name }}
-            </option>
-          </optgroup>
-        </select>
-      </div>
+      <el-form-item label="Fecha y Hora de Inicio" prop="startTime">
+        <el-col :span="12">
+          <el-form-item prop="startDate" label-width="0">
+            <el-date-picker
+              v-model="formData.startDate"
+              type="date"
+              placeholder="Fecha de inicio"
+              style="width: 100%;"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item prop="startTime" label-width="0">
+            <el-time-select
+              v-model="formData.startTime"
+              placeholder="Hora de inicio"
+              style="width: 100%; margin-left: 10px;"
+              :max-time="formData.endTime"
+              start="00:00"
+              step="00:15"
+              end="23:45"
+            />
+          </el-form-item>
+        </el-col>
+      </el-form-item>
 
-      <div class="form-group time-group">
-        <div>
-          <label for="startDate">Fecha Inicio:</label>
-          <el-date-picker
-            id="startDate"
-            v-model="formData.startDate"
-            type="date"
-            placeholder="Elige fecha"
-            style="width: 240px"
-            required
-          />
-        </div>
-        <div>
-          <label for="startTime">Hora Inicio:</label>
-          <el-time-select
-            v-model="formData.startTime"
-            style="width: 240px"
-            :max-time="formData.endTime"
-            class="mr-4"
-            placeholder="Hora de inicio"
-            start="08:30"
-            step="00:15"
-            end="18:30"
-            required
-          />
-          </div>
-      </div>
-
-      <div class="form-group time-group">
-        <div>
-          <label for="endDate">Fecha Fin:</label>
-          <el-date-picker
-            id="endDate"
-            v-model="formData.endDate"
-            type="date"
-            placeholder="Elige fecha"
-            style="width: 240px"
-            required
-          />
-        </div>
-        <div>
-          <label for="endTime">Hora Fin:</label>
-          <el-time-select
-            v-model="formData.endTime"
-            style="width: 240px"
-            :min-time="formData.startTime"
-            placeholder="Hora de fin"
-            start="08:30"
-            step="00:15"
-            end="18:30"
-            required
-          />
-          </div>
-      </div>
+      <el-form-item label="Fecha y Hora de Fin" prop="endTime">
+        <el-col :span="12">
+          <el-form-item prop="endDate" label-width="0">
+            <el-date-picker
+              v-model="formData.endDate"
+              type="date"
+              placeholder="Fecha de fin"
+              style="width: 100%;"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item prop="endTime" label-width="0">
+            <el-time-select
+              v-model="formData.endTime"
+              placeholder="Hora de fin"
+              style="width: 100%; margin-left: 10px;"
+              :min-time="formData.startTime"
+              start="00:00"
+              step="00:15"
+              end="23:45"
+            />
+          </el-form-item>
+        </el-col>
+      </el-form-item>
 
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-      <div class="form-actions">
-        <button type="button" @click="closeModal">Cancelar</button>
-        <button type="submit">Guardar Reserva</button>
-      </div>
-       <button type="button" class="close-button" @click="closeModal" aria-label="Cerrar">&times;</button>
-    </form>
-  </dialog>
-  <div v-if="show" class="modal-backdrop" @click="closeModal"></div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="closeModal">Cancelar</el-button>
+          <el-button type="primary" @click="submitForm">Guardar Reserva</el-button>
+        </span>
+      </template>
+    </el-form>
+  </el-dialog>
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed } from 'vue';
+import { ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElOptionGroup, ElDatePicker, ElTimeSelect, ElCol, ElButton } from 'element-plus';
 
 const props = defineProps({
-  show: Boolean, // Controla la visibilidad
-  initialData: Object, // Datos iniciales para edición o pre-relleno
-  allResources: Array, // Para el desplegable de salas
+  show: Boolean,
+  initialData: Object,
+  allResources: Array,
 });
 
 const emit = defineEmits(['close', 'save-event']);
+
+const show = computed(() => props.show);
+const isEditing = computed(() => !!props.initialData.id);
 
 const formData = ref({
   id: null,
   title: '',
   resourceId: '',
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: '',
+  startDate: null,
+  startTime: null,
+  endDate: null,
+  endTime: null,
 });
 
-const errorMessage = ref('');
+// watch(() => props.initialData, (newInitialData) => {
+//   if (newInitialData) {
+//     formData.value = {
+//       id: newInitialData.id || null,
+//       title: newInitialData.title || '',
+//       resourceId: newInitialData.resourceId || '',
+//       startDate: newInitialData.start ? new Date(newInitialData.start) : null,
+//       startTime: newInitialData.start ? formatTime(newInitialData.start) : null,
+//       endDate: newInitialData.end ? new Date(newInitialData.end) : null,
+//       endTime: newInitialData.end ? formatTime(newInitialData.end) : null,
+//     };
+//   } else {
+//     resetForm();
+//   }
+// }, { immediate: true });
 
-// --- NUEVO: Generar opciones de tiempo ---
-const timeOptions = computed(() => {
-  const options = [];
-  // Puedes ajustar el rango si no necesitas 24h completas
-  const startHour = 0;
-  const endHour = 24; // Hasta las 23:45
-
-  for (let hour = startHour; hour < endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += 15) { // Incrementos de 15 min
-      const hourStr = String(hour).padStart(2, '0');
-      const minuteStr = String(minute).padStart(2, '0');
-      options.push(`${hourStr}:${minuteStr}`);
-    }
-  }
-  // options contendrá ["00:00", "00:15", ..., "23:45"]
-  return options;
-});
-
-// Helper para formatear Date a YYYY-MM-DD
-const formatDate = (date) => date ? date.toISOString().split('T')[0] : '';
-// Helper para formatear Date a HH:MM
-const formatTime = (date) => date ? date.toTimeString().slice(0, 5) : '';
-
-// Agrupar recursos por edificio para el <select>
 const groupedResources = computed(() => {
+  if (!props.allResources) return [];
   const groups = {};
   props.allResources.forEach(resource => {
-    const building = resource.building || 'Sin Edificio';
-    if (!groups[building]) {
-      groups[building] = { name: building, resources: [] };
+    if (!groups[resource.building]) {
+      groups[resource.building] = { name: resource.building, resources: [] };
     }
-    groups[building].resources.push(resource);
+    groups[resource.building].resources.push(resource);
   });
   return Object.values(groups);
 });
 
-// Detectar si estamos editando o creando
-const isEditing = computed(() => !!formData.value.id);
+const errorMessage = ref('');
+const ruleFormRef = ref(null);
+const rules = ref({
+  title: [{ required: true, message: 'Por favor, ingresa el título', trigger: 'blur' }],
+  resourceId: [{ required: true, message: 'Por favor, selecciona una sala', trigger: 'change' }],
+  startDate: [{ required: true, message: 'Por favor, selecciona la fecha de inicio', trigger: 'change' }],
+  startTime: [{ required: true, message: 'Por favor, selecciona la hora de inicio', trigger: 'change' }],
+  endDate: [{ required: true, message: 'Por favor, selecciona la fecha de fin', trigger: 'change' }],
+  endTime: [{ required: true, message: 'Por favor, selecciona la hora de fin', trigger: 'change' }],
+});
 
-
-// Observar cambios en initialData para pre-rellenar el formulario
-watch(() => props.initialData, (newData) => {
-  if (newData && props.show) { // Solo rellenar si hay datos y el modal se está mostrando
-    formData.value = {
-      id: newData.id || null,
-      title: newData.title || '',
-      resourceId: newData.resourceId || '',
-      startDate: formatDate(newData.start || new Date()), // Valor por defecto: hoy
-      startTime: formatTime(newData.start || new Date()), // Valor por defecto: ahora
-      endDate: formatDate(newData.end || new Date(Date.now() + 60 * 60 * 1000)), // Default: +1 hora
-      endTime: formatTime(newData.end || new Date(Date.now() + 60 * 60 * 1000)),
-    };
-    errorMessage.value = ''; // Limpiar errores al abrir/rellenar
-  } else if (!props.show) {
-      // Limpiar al cerrar (opcional, pero buena práctica)
-       formData.value = { id: null, title: '', resourceId: '', startDate: '', startTime: '', endDate: '', endTime: '' };
-       errorMessage.value = '';
-  }
-}, { immediate: true, deep: true }); // deep:true por si initialData es complejo
-
-function closeModal() {
-  emit('close');
-}
-
-function submitForm() {
-  errorMessage.value = ''; // Limpiar error previo
-
-  // Combinar fecha y hora en objetos Date
-  const startDateTime = new Date(`${formData.value.startDate}T${formData.value.startTime}`);
-  const endDateTime = new Date(`${formData.value.endDate}T${formData.value.endTime}`);
-
-  // Validación básica
-  if (!formData.value.title || !formData.value.resourceId || !formData.value.startDate || !formData.value.startTime || !formData.value.endDate || !formData.value.endTime) {
-      errorMessage.value = "Por favor, rellena todos los campos.";
-      return;
-  }
-  if (endDateTime <= startDateTime) {
-    errorMessage.value = 'La hora de fin debe ser posterior a la hora de inicio.';
-    return;
-  }
-
-  // Comprobar si las fechas son válidas (a veces el input puede dar fechas inválidas)
-   if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
-       errorMessage.value = "Las fechas u horas introducidas no son válidas.";
-       return;
-   }
-
-
-  // Preparar datos del evento para emitir
-  const eventData = {
-    id: formData.value.id, // Será null si es nuevo
-    title: formData.value.title,
-    resourceId: formData.value.resourceId,
-    start: startDateTime,
-    end: endDateTime,
+const resetForm = () => {
+  formData.value = {
+    id: null,
+    title: '',
+    resourceId: '',
+    startDate: null,
+    startTime: null,
+    endDate: null,
+    endTime: null,
   };
+  errorMessage.value = '';
+  if (ruleFormRef.value) {
+    ruleFormRef.value.resetFields();
+  }
+};
 
-  // Aquí podrías añadir validación de solapamiento si tuvieras acceso a todos los eventos
-  // para la sala seleccionada en ese rango de tiempo.
+const closeModal = () => {
+  emit('close');
+  resetForm();
+};
 
-  emit('save-event', eventData);
-  // El componente padre se encargará de cerrar el modal si el guardado fue exitoso
-}
+const formatTime = (date) => {
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
 
+const submitForm = () => {
+  ruleFormRef.value.validate((valid) => {
+    if (valid) {
+      const start = new Date(formData.value.startDate);
+      const startTimeParts = formData.value.startTime.split(':');
+      start.setHours(parseInt(startTimeParts[0]), parseInt(startTimeParts[1]));
+
+      const end = new Date(formData.value.endDate);
+      const endTimeParts = formData.value.endTime.split(':');
+      end.setHours(parseInt(endTimeParts[0]), parseInt(endTimeParts[1]));
+
+      if (end <= start) {
+        errorMessage.value = 'La hora de fin debe ser posterior a la hora de inicio.';
+        return;
+      }
+
+      emit('save-event', { ...formData.value, start: start.toISOString(), end: end.toISOString() });
+      closeModal();
+    } else {
+      console.log('Formulario no válido');
+      return false;
+    }
+  });
+};
 </script>
 
 <style scoped>
-.event-modal {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 25px 30px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  max-width: 500px;
-  width: 90%;
-  margin: 50px auto; /* Centrado básico */
-  position: fixed; /* Para que esté sobre el backdrop */
-  top: 5vh; /* Ajustar verticalmente */
-  left: 0;
-  right: 0;
-  background: white;
-  z-index: 1001; /* Encima del backdrop */
-}
-/* Estilo para cuando se usa <dialog> nativo */
-dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
+.el-dialog {
+  height: 200px;
+  padding: 20px;
 }
 
-label {
-  color: #333
-}
-
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
-
-h3 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #333;
-  text-align: center;
+.event-form {
+  padding: 20px;
 }
 
 .form-group {
   margin-bottom: 15px;
 }
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-size: 0.9em;
-}
-.form-group input[type="text"],
-.form-group input[type="date"],
-.form-group input[type="time"],
-.form-group select {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box; /* Importante */
-  font-size: 1em;
-  background-color: rgb(255, 255, 255);
-  color: #000000;
-}
 
 .time-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas para fecha/hora */
-    gap: 15px;
+  display: flex;
+  gap: 10px;
 }
 
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 25px;
   gap: 10px;
-}
-
-.form-actions button {
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-.form-actions button[type="submit"] {
-  background-color: #007bff;
-  color: white;
-  border: none;
-}
-.form-actions button[type="button"] {
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #ccc;
+  margin-top: 20px;
 }
 
 .close-button {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 1.8em;
-    line-height: 1;
-    cursor: pointer;
-    color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #999;
 }
+
 .close-button:hover {
-    color: #333;
+  color: #333;
 }
-
-.error-message {
-    color: red;
-    font-size: 0.9em;
-    margin-top: 10px;
-    text-align: center;
-}
-
 </style>

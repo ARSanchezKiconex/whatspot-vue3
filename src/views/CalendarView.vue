@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import Calendar from '../components/calendar/Calendar.vue';
+import Calendar from '../components/date-picker/Calendar.vue';
 </script>
 
 <style scoped>

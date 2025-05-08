@@ -128,7 +128,7 @@ function getEventStyle(event) {
 .day-view {
   display: flex;
   flex-direction: column;
-  height: 600px; /* Altura fija */
+  height: 500px; /* Altura fija */
   border-top: 1px solid #eee;
   overflow: hidden; /* Ocultar desbordamiento general */
 }
