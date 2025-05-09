@@ -13,6 +13,18 @@ import 'element-plus/dist/index.css';
 import es from 'element-plus/es/locale/lang/es' // Import Spanish locale
 import * as ElementPlusIconsVue from '@element-plus/icons-vue' // Import Element Plus icons
 
+// Importa Vuetify
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import { aliases, fa } from 'vuetify/iconsets/fa'
+
+const vuetify = createVuetify({
+  components,
+  directives,
+});
+
 // Create Pinia store
 const pinia = createPinia()
 
@@ -34,4 +46,13 @@ app.use(pinia);
 app.use(ElementPlus, {
   locale: es,
 });
+app.use(vuetify);
 app.mount('#app');
+
+export default createVuetify({
+  icons: {
+    defaultSet: 'fa',
+    aliases,
+    sets: { fa },
+  },
+})
