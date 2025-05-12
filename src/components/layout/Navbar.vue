@@ -1,23 +1,11 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
-
-const isMobileMenuOpen = ref(false)
-
-const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
-}
-</script>
-
 <template>
   <header class="bg-white shadow-sm">
     <nav class="container mx-auto px-4 py-3">
       <div class="flex justify-between items-center">
         <!-- Logo -->
         <RouterLink to="/" class="flex items-center">
-          <span class="text-2xl font-bold text-primary-600">WhatsSpot</span>
+          <span class="text-2xl font-bold text-primary-600" id="title-nav">WhatsSpot</span>
         </RouterLink>
-        
         <!-- Desktop Navigation -->
         <div class="hidden md:flex space-x-6">
           <RouterLink to="/" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
@@ -49,3 +37,21 @@ const toggleMobileMenu = () => {
     </nav>
   </header>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
+import CalendarHeader from '../date-picker/CalendarHeader.vue';
+
+const isMobileMenuOpen = ref(false)
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+</script>
+
+<style scoped>
+#title-nav {
+  background-color: aqua;
+}
+</style>
