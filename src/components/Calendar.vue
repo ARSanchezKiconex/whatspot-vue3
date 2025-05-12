@@ -44,10 +44,7 @@
 
     <div class="main-content">
       <CalendarHeader
-        :current-month="displayMonthName"
-        :current-year="displayYear"
-        :current-week-range="displayWeekRange"
-        :current-day="displayDay"
+
         :view="currentView"
         @previous="navigatePrevious"
         @next="navigateNext"
@@ -76,43 +73,54 @@
           :resources="filteredResources"
           :events="filteredEvents"
         />
-        <NoWeekendView
-          v-if="currentView === 'no-weekend'"
-          :selected-date="selectedDate"
-          :resources="filteredResources"
-          :events="filteredEvents"
-        />
       </div>
 
       <v-btn
         class="fab-add-event"
         icon
         color="primary"
-        @click="openEventModal()"
+        @click="showFacilityModal = true"
         elevation="6"
       >
-        <v-icon>mdi-plus</v-icon>
+        <i class="fa-solid fa-plus"></i>
       </v-btn>
     </div>
 
-    <MiniWeekViewModal
-      :show="isMiniWeekViewVisible"
-      :resources="filteredResources"
-      @close="closeMiniWeekViewModal"
-      @open-booking="handleOpenBookingForm"
+        <FacilitySelectionModal 
+    v-model:dialog="showFacilityModal"
+    :installations="installations"
+    @next="handleSelectedFacility"
     />
-    <BookFormModal
-      :show="isModalVisible"
-      :initial-data="modalInitialData"
-      :all-resources="allResources"
-      @close="closeEventModal"
-      @save-event="handleSaveEvent"
+
+    <RoomSelectionModal
+      v-model:dialog="showRoomModal"
+      :rooms="availableRooms"
+      @next="handleRoomSelected"
     />
+
+    <DateSelectionModal
+      v-model:dialog="showDateModal"
+      @next="handleDateSelected"
+    />
+
+    <DetailsSelectionModal
+      v-model:dialog="showDetailsModal"
+      :booking="booking"
+      :installations="installations"
+      @confirmBooking="handleBooking"
+    />
+
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import FacilitySelectionModal from './modals/FacilitySelectionModal.vue';
+import RoomSelectionModal from './modals/RoomSelectionModal.vue';
+import DateSelectionModal from './modals/DateSelectionModal.vue';
+import DetailsSelectionModal from './modals/DetailsSelectionModal.vue';
+
+
+import { ref, reactive, computed, watch } from 'vue';
 import CalendarHeader from './date-picker/CalendarHeader.vue';
 import CalendarGrid from './date-picker/CalendarGrid.vue';
 import WeekView from './views/WeekView.vue';
@@ -125,7 +133,64 @@ import { v4 as uuidv4 } from 'uuid';
 import CalendarViewSelector from './CalendarViewSelector.vue';
 import UserOnlySwitch from './UserOnlySwitch.vue';
 
-const value1 = ref(true);
+// SHOW MODALS
+const showFacilityModal = ref(false);
+const showRoomModal = ref(false);
+const showDateModal = ref(false);
+const showDetailsModal = ref(false); 
+
+// DATOS DE RESERVA
+const booking = reactive({
+  facility: null,
+  room: null,
+  date: null,
+  time: null,
+  title: null,
+  details: null
+});
+
+
+// PRUEBA
+const installations = ref([
+  { id: 'e1', name: 'Edificio 1', rooms:['Sala 01', 'Sala 02'] },
+  { id: 'e2', name: 'Edificio 2', rooms:['Sala 13', 'Sala 14'] },
+  { id: 'e3', name: 'Edificio 3', rooms:['Sala 25', 'Sala 26'] },
+]);
+
+const availableRooms = ref([]); 
+
+
+// HANDLERS
+function handleSelectedFacility(facility) {
+  booking.facility = facility;
+  availableRooms.value = facility.rooms; 
+
+  showFacilityModal.value = false
+  showRoomModal.value = true
+}
+
+function handleRoomSelected(room) {
+  booking.room = room;
+
+  showRoomModal.value = false
+  showDateModal.value = true
+}
+
+function handleDateSelected(date) {
+  booking.date = date.date;
+  booking.time = date.time;
+
+  showDateModal.value = false; 
+  showDetailsModal.value = true;
+}
+
+//TODO: Cambiar a la función de reserva real
+function handleBooking(bookingData) {
+  console.log('Reserva confirmada:', bookingData);
+}
+
+
+// const value1 = ref(true);
 const showOnlyMine = ref(false);
 
 const viewOptions = [
@@ -201,54 +266,6 @@ const closeMiniWeekViewModal = () => {
   isMiniWeekViewVisible.value = false;
 };
 
-const handleOpenBookingForm = (payload) => {
-  const { date, resource } = payload;
-  openEventModal({
-    start: date,
-    end: new Date(date.getTime() + 60 * 60 * 1000),
-    resourceId: resource.id,
-  });
-};
-
-const isModalVisible = ref(false);
-const modalInitialData = ref({});
-
-function openEventModal(initialData = {}) {
-  const now = new Date();
-  const defaultStart = initialData.start || now;
-  const defaultEnd = initialData.end || new Date(defaultStart.getTime() + 60 * 60 * 1000);
-
-  modalInitialData.value = {
-    id: initialData.id || null,
-    title: initialData.title || '',
-    resourceId: initialData.resourceId || '',
-    start: defaultStart,
-    end: defaultEnd,
-  };
-  isModalVisible.value = true;
-}
-
-function closeEventModal() {
-  isModalVisible.value = false;
-  modalInitialData.value = {};
-}
-
-function handleSaveEvent(eventData) {
-  if (eventData.id) {
-    const index = allEvents.value.findIndex(e => e.id === eventData.id);
-    if (index !== -1) {
-      allEvents.value.splice(index, 1, { ...eventData });
-    }
-  } else {
-    const newEvent = {
-      ...eventData,
-      id: uuidv4(),
-    };
-    allEvents.value.push(newEvent);
-  }
-  closeEventModal();
-}
-
 
 // --- Lógica de Navegación y Selección (sin cambios) ---
 function navigatePrevious() {
@@ -288,14 +305,6 @@ function selectDateAndSwitchView(date) {
   selectedDate.value = new Date(date);
   currentView.value = 'day';
 }
-// --- Propiedades Computadas para Cabecera (sin cambios) ---
-const displayYear = computed(() => {/* ... */});
-const displayMonthName = computed(() => {/* ... */});
-const displayDay = computed(() => {/* ... */});
-const displayWeekRange = computed(() => {/* ... */});
-// --- Watcher para selectedDate (sin cambios) ---
-watch(selectedDate, (newDate) => { /* ... */ });
-
 
 </script>
 

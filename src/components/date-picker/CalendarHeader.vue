@@ -1,16 +1,6 @@
 <template>
   <div class="calendar-header">
     <div class="current-display">
-      <div v-if="view === 'month'" class="month-year">
-        <span class="month">{{ currentMonth }}</span>
-        <span class="year">{{ currentYear }}</span>
-      </div>
-      <div v-if="view === 'week'" class="week-range">
-        {{ currentWeekRange }} <span class="year">{{ currentYear }}</span>
-      </div>
-      <div v-if="view === 'day'" class="day-display">
-        {{ currentDay }} <span class="year">{{ currentYear }}</span>
-      </div>
     </div>
     <button @click="$emit('previous')" class="nav-button">&lt;</button>
     <button @click="$emit('today')" class="nav-button today-button">Hoy</button> 
@@ -19,13 +9,6 @@
 </template>
 
 <script setup>
-defineProps({
-  currentMonth: String,
-  currentYear: Number,
-  currentWeekRange: String,
-  currentDay: String,
-  view: String, // 'month', 'week', 'day'
-});
 
 defineEmits(['previous', 'next', 'today']);
 </script>
