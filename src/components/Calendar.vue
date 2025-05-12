@@ -8,7 +8,10 @@
   >
     <!-- Vista MiniMes -->
     <v-card flat class="pa-2">
-      <MiniMonthView :selected-date="selectedDate" />
+      <MiniMonthView 
+        :selected-date="selectedDate"
+        @dateSelected="selectedDate = $event" 
+      />
     </v-card>
 
     <!-- Selector de Vista -->
@@ -64,7 +67,7 @@
           :resources="filteredResources"
           :events="filteredEvents"
         />
-        <CalendarGrid
+        <MonthView
           v-if="currentView === 'month'"
           :selected-date="selectedDate"
           :year="selectedDate.getFullYear()"
@@ -86,10 +89,10 @@
       </v-btn>
     </div>
 
-        <FacilitySelectionModal 
-    v-model:dialog="showFacilityModal"
-    :installations="installations"
-    @next="handleSelectedFacility"
+    <FacilitySelectionModal 
+      v-model:dialog="showFacilityModal"
+      :installations="installations"
+      @next="handleSelectedFacility"
     />
 
     <RoomSelectionModal
@@ -121,14 +124,14 @@ import DetailsSelectionModal from './modals/DetailsSelectionModal.vue';
 
 
 import { ref, reactive, computed, watch } from 'vue';
-import CalendarHeader from './date-picker/CalendarHeader.vue';
-import CalendarGrid from './views/MonthView.vue';
+import CalendarHeader from './calendar-navigation/CalendarHeader.vue';
+import MonthView from './views/MonthView.vue';
 import WeekView from './views/WeekView.vue';
 import DayView from './views/DayView.vue';
 import MiniMonthView from './views/MiniMonthView.vue';
 import ResourceFilter from './filters/ResourceFilter.vue';
 import { v4 as uuidv4 } from 'uuid';
-import CalendarViewSelector from './date-picker/CalendarViewSelector.vue';
+import CalendarViewSelector from './calendar-navigation/CalendarViewSelector.vue';
 import UserOnlySwitch from './filters/UserOnlySwitch.vue';
 
 // SHOW MODALS

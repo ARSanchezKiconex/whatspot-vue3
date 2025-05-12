@@ -10,6 +10,7 @@
       <span
         v-for="(day, index) in daysOfMonth"
         :key="index"
+        @click="selectDay(day)"
         :class="{
           'day-cell': true,
           'other-month': !day.isCurrentMonth,
@@ -25,6 +26,8 @@
 
 <script setup>
 import { computed } from 'vue';
+
+const emit = defineEmits(['dateSelected']); // Puedes usar también 'update:selectedDate' si quieres v-model
 
 const props = defineProps({
   selectedDate: Date, // La fecha actualmente seleccionada en el calendario principal
@@ -83,6 +86,11 @@ const daysOfMonth = computed(() => {
 
   return days.slice(0, gridCells); // Devolver 35 celdas por defecto
 });
+
+function selectDay(day) {
+  if (!day.isCurrentMonth) return; // Opcional: solo permitir selección en el mes actual
+  emit('dateSelected', day.date);
+}
 
 </script>
 
