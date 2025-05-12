@@ -122,16 +122,14 @@ import DetailsSelectionModal from './modals/DetailsSelectionModal.vue';
 
 import { ref, reactive, computed, watch } from 'vue';
 import CalendarHeader from './date-picker/CalendarHeader.vue';
-import CalendarGrid from './date-picker/CalendarGrid.vue';
+import CalendarGrid from './views/MonthView.vue';
 import WeekView from './views/WeekView.vue';
 import DayView from './views/DayView.vue';
 import MiniMonthView from './views/MiniMonthView.vue';
 import ResourceFilter from './filters/ResourceFilter.vue';
-import BookFormModal from './modals/BookFormModal.vue';
-import MiniWeekViewModal from './modals/MiniWeekViewModal.vue';
 import { v4 as uuidv4 } from 'uuid';
-import CalendarViewSelector from './CalendarViewSelector.vue';
-import UserOnlySwitch from './UserOnlySwitch.vue';
+import CalendarViewSelector from './date-picker/CalendarViewSelector.vue';
+import UserOnlySwitch from './filters/UserOnlySwitch.vue';
 
 // SHOW MODALS
 const showFacilityModal = ref(false);
