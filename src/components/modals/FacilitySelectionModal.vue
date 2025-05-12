@@ -1,15 +1,18 @@
 <template>
-  <v-dialog v-model="internalDialog" max-width="500">
-    <v-card>
-      <v-card-title>Selecciona una instalación</v-card-title>
+  <v-dialog v-model="internalDialog" max-width="500" transition="dialog-bottom-transition">
+    <v-card class="pa-4 rounded-xl">
+      <v-card-title class="text-center text-subtitle-1 font-weight-medium text-grey-darken-3">
+        Selecciona una instalación
+      </v-card-title>
       <v-card-text>
-        <v-list>
+        <v-list class="custom-list">
           <v-list-item
             v-for="facility in installations"
             :key="facility.id"
             @click="selectFacility(facility)"
+            class="custom-list-item"
           >
-            {{ facility.name }}
+            <span class="custom-item-text">{{ facility.name }}</span>
           </v-list-item>
         </v-list>
       </v-card-text>
@@ -43,3 +46,32 @@ function selectFacility(facility) {
   emit('update:dialog', false)
 }
 </script>
+
+<style scoped>
+.custom-list {
+  padding: 0;
+}
+
+.custom-list-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #f5f5f5;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.custom-list-item:hover {
+  background-color: #e0e0e0;
+}
+
+.custom-item-text {
+  font-size: 16px;
+  color: #333;
+}
+
+.v-dialog__content {
+  padding: 0;
+}
+</style>

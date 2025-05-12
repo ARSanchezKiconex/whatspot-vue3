@@ -1,8 +1,10 @@
 <template>
-  <v-dialog v-model="dialog" max-width="600">
-    <v-card>
-      <v-card-title>Detalles de la Reserva</v-card-title>
-      <v-card-text>
+  <v-dialog v-model="dialog" max-width="600" transition="dialog-bottom-transition">
+    <v-card class="pa-4 rounded-xl">
+      <v-card-title class="text-center text-subtitle-1 font-weight-medium text-grey-darken-3">
+        Detalles de la Reserva
+      </v-card-title>
+      <v-card-text class="dialog-content">
         <v-container>
           <!-- Línea 1: Edificio -->
           <v-row>
@@ -14,6 +16,7 @@
                 return-object
                 @update:modelValue="onFacilityChange"
                 item-title="name"
+                class="custom-input"
               />
             </v-col>
           </v-row>
@@ -26,6 +29,7 @@
                 :items="availableRooms"
                 label="Sala"
                 :disabled="!form.facility"
+                class="custom-input"
               />
             </v-col>
           </v-row>
@@ -35,16 +39,18 @@
             <v-col cols="6">
               <v-text-field
                 v-model="form.dateFrom"
-                label="Fecha Desde"
+                label="Desde"
                 type="date"
                 :min="today"
+                class="custom-input"
               />
             </v-col>
             <v-col cols="6">
-              <v-text-field
+              <v-select
                 v-model="form.timeFrom"
-                label="Hora Desde"
-                type="time"
+                label="Desde"
+                :items="timeIntervals"
+                class="custom-input"
               />
             </v-col>
           </v-row>
@@ -54,17 +60,18 @@
             <v-col cols="6">
               <v-text-field
                 v-model="form.dateTo"
-                label="Fecha Hasta"
+                label="Hasta"
                 type="date"
                 :min="form.dateFrom || today"
+                class="custom-input"
               />
             </v-col>
             <v-col cols="6">
-              <v-text-field
+              <v-select
                 v-model="form.timeTo"
-                label="Hora Hasta"
-                type="time"
-                
+                label="Hasta"
+                :items="timeIntervals"
+                class="custom-input"
               />
             </v-col>
           </v-row>
@@ -75,6 +82,7 @@
               <v-text-field
                 v-model="form.title"
                 label="Título de la Reserva"
+                class="custom-input"
               />
             </v-col>
           </v-row>
@@ -85,6 +93,7 @@
               <v-textarea
                 v-model="form.details"
                 label="Detalles de la Reserva"
+                class="custom-input"
               />
             </v-col>
           </v-row>
@@ -93,7 +102,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" @click="confirmReservation">
+        <v-btn color="primary" @click="confirmReservation" class="confirm-btn">
           Confirmar Reserva
         </v-btn>
       </v-card-actions>
@@ -102,7 +111,6 @@
 </template>
 
 <script setup>
-import { install } from 'element-plus'
 import { ref, watch } from 'vue'
 import { defineProps, defineEmits } from 'vue'
 
@@ -112,9 +120,26 @@ const props = defineProps({
   installations: Array,
 })
 
-const today = new Date().toISOString().substring(0, 10) 
+const today = new Date().toISOString().substring(0, 10)
 
 const availableRooms = ref([])
+const timeIntervals = ref([])
+
+// Generate time intervals in 15-minute increments
+function generateTimeIntervals() {
+  const intervals = []
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 15) {
+      const formattedHour = hour.toString().padStart(2, '0')
+      const formattedMinute = minute.toString().padStart(2, '0')
+      intervals.push(`${formattedHour}:${formattedMinute}`)
+    }
+  }
+  return intervals
+}
+
+// Initialize the time intervals
+timeIntervals.value = generateTimeIntervals()
 
 const emit = defineEmits(['update:dialog', 'confirmBooking'])
 
@@ -180,14 +205,10 @@ watch(() => props.dialog, (val) => {
     form.value.dateFrom = toDateString(props.booking.date) || ''
     form.value.timeFrom = props.booking.time || ''
     form.value.dateTo = toDateString(props.booking.date) || ''
-    form.value.timeTo = sumarUnaHora(props.booking.time || '')
+    form.value.timeTo = sumarUnaHora(props.booking.time || '00:00')
     form.value.title = ''
     form.value.details = ''
   }
-})
-
-watch(() => props.dialog, (val) => {
-  dialog.value = val
 })
 
 watch(dialog, (val) => {
@@ -196,7 +217,6 @@ watch(dialog, (val) => {
 
 // Emitir los datos finales
 function confirmReservation() {
-
   if (!isValidDateTimeRange()) {
     alert("La fecha/hora de finalización no puede ser anterior a la de inicio.")
     return
@@ -206,3 +226,27 @@ function confirmReservation() {
   emit('confirmBooking', { ...form.value })
 }
 </script>
+
+<style scoped>
+.custom-input {
+  margin-bottom: 16px;
+}
+
+.confirm-btn {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.dialog-content {
+  max-height: 400px; /* Ajustar según el tamaño necesario */
+  overflow-y: auto; /* Habilita el scroll */
+}
+
+.v-dialog__content {
+  padding: 0;
+}
+
+.v-btn {
+  border-radius: 12px;
+}
+</style>
