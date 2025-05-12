@@ -1,21 +1,31 @@
 <template>
+
   <div class="week-view">
+    
+    <!-- CABECERA -->
     <div class="header-row">
-      <div class="resource-header">Salas</div> <div v-for="day in weekDays" :key="day.date.toISOString()" class="day-header">
+      <div class="resource-header">Salas</div> 
+      <div v-for="day in weekDays" :key="day.date.toISOString()" class="day-header">
         <span class="weekday-name">{{ day.shortName }}</span>
         <span class="day-number">{{ day.dayNumber }}</span>
       </div>
     </div>
+
+    <!-- FILAS -->
     <div class="resource-grid">
+
       <div
         v-for="resource in resources"
         :key="resource.id"
         class="resource-line"
       >
+      <!-- SALAS -->
         <div class="resource-cell">
           <span class="resource-name">{{ resource.name }}</span>
           <span class="resource-building">{{ resource.building }}</span>
         </div>
+
+        <!-- RESERVAS -->
         <div class="resource-row">
           <div
             v-for="day in weekDays"
@@ -26,12 +36,13 @@
               v-for="event in getEventsForResourceAndDay(resource.id, day.date)"
               :key="event.id"
               class="event-chip"
-              :title="`${event.title} (${formatTime(event.start)} - ${formatTime(event.end)})`"
+              :title="`${event.title} (${formatTime(event.timeFrom)} - ${formatTime(event.timeTo)})`"
             >
               {{ event.title }}
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -74,17 +85,20 @@ function getEventsForResourceAndDay(resourceId, date) {
   const dayEnd = new Date(date);
   dayEnd.setHours(23, 59, 59, 999);
 
-  return props.events.filter(event =>
-    event.resourceId === resourceId &&
-    event.start >= dayStart &&
-    event.start <= dayEnd
-  );
+  return props.events.filter(event => {
+    const eventDate = new Date(event.dateFrom); // ← conversión aquí
+    return (
+      event.room === resourceId &&
+      eventDate >= dayStart &&
+      eventDate <= dayEnd
+    );
+  });
 }
-
 // Formatear hora
-function formatTime(date) {
-    if(!date) return '';
-    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
+function formatTime(time) {
+  if (!time) return '';
+  if (typeof time === 'string') return time;
+  return time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
 </script>

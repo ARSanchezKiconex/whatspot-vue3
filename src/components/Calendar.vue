@@ -65,7 +65,7 @@
           v-if="currentView === 'week'"
           :selected-date="selectedDate"
           :resources="filteredResources"
-          :events="filteredEvents"
+          :events="allEvents"
         />
         <MonthView
           v-if="currentView === 'month'"
@@ -187,8 +187,124 @@ function handleDateSelected(date) {
 
 //TODO: Cambiar a la función de reserva real
 function handleBooking(bookingData) {
-  console.log('Reserva confirmada:', bookingData);
+  allEvents.value.push(bookingData);
+  console.log('Reservas:', allEvents.value);
 }
+
+// EVENTOS DE PRUEBA, mas adelante cargará las lista desde la base de datos
+const allEvents = ref([
+{
+    id: 1,
+    facility: 'Edificio Principal',
+    room: 's1',
+    dateFrom: '2025-05-06',
+    timeFrom: '10:00',
+    dateTo: '2025-05-06',
+    timeTo: '11:30',
+    title: 'Reunión de equipo',
+    details: 'Planificación semanal'
+  },
+  {
+    id: 2,
+    facility: 'Edificio Principal',
+    room: 's2',
+    dateFrom: '2025-05-07',
+    timeFrom: '09:00',
+    dateTo: '2025-05-07',
+    timeTo: '11:00',
+    title: 'Presentación comercial',
+    details: 'Cliente importante visita'
+  },
+  {
+    id: 3,
+    facility: 'Anexo Norte',
+    room: 's3',
+    dateFrom: '2025-05-09',
+    timeFrom: '13:00',
+    dateTo: '2025-05-09',
+    timeTo: '14:30',
+    title: 'Llamada internacional',
+    details: 'Conferencia con socios'
+  },
+  {
+    id: 4,
+    facility: 'Anexo Norte',
+    room: 's4',
+    dateFrom: '2025-05-05',
+    timeFrom: '15:00',
+    dateTo: '2025-05-05',
+    timeTo: '17:00',
+    title: 'Sesión de brainstorming',
+    details: 'Ideas para nuevo producto'
+  },
+  {
+    id: 5,
+    facility: 'Edificio Sur',
+    room: 's5',
+    dateFrom: '2025-05-06',
+    timeFrom: '11:00',
+    dateTo: '2025-05-06',
+    timeTo: '12:45',
+    title: 'Revisión de KPIs',
+    details: 'Análisis mensual'
+  },
+  {
+    id: 6,
+    facility: 'Anexo Norte',
+    room: 's4',
+    dateFrom: '2025-05-08',
+    timeFrom: '14:00',
+    dateTo: '2025-05-08',
+    timeTo: '15:30',
+    title: 'Taller interno',
+    details: 'Capacitación del personal'
+  },
+  {
+    id: 7,
+    facility: 'Edificio Principal',
+    room: 's1',
+    dateFrom: '2025-05-09',
+    timeFrom: '08:30',
+    dateTo: '2025-05-09',
+    timeTo: '10:00',
+    title: 'Desayuno de trabajo',
+    details: 'Con proveedores'
+  },
+  {
+    id: 8,
+    facility: 'Edificio Principal',
+    room: 's2',
+    dateFrom: '2025-05-07',
+    timeFrom: '16:00',
+    dateTo: '2025-05-07',
+    timeTo: '17:30',
+    title: 'Formación sobre seguridad',
+    details: 'Normativas actualizadas'
+  },
+  {
+    id: 9,
+    facility: 'Anexo Norte',
+    room: 's3',
+    dateFrom: '2025-05-05',
+    timeFrom: '12:00',
+    dateTo: '2025-05-05',
+    timeTo: '13:30',
+    title: 'Reunión con dirección',
+    details: 'Actualización de proyectos'
+  },
+  {
+    id: 10,
+    facility: 'Edificio Sur',
+    room: 's5',
+    dateFrom: '2025-05-08',
+    timeFrom: '10:00',
+    dateTo: '2025-05-08',
+    timeTo: '12:00',
+    title: 'Evaluación de desempeño',
+    details: 'Trimestre 1'
+  }
+]);
+
 
 
 // const value1 = ref(true);
@@ -216,13 +332,6 @@ tomorrowDate.setDate(todayDate.getDate() + 1);
 const dayAfterTomorrowDate = new Date(todayDate);
 dayAfterTomorrowDate.setDate(todayDate.getDate() + 2);
 
-const allEvents = ref([
-  { id: 'e1', resourceId: 's1', title: 'Reunión equipo', start: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 10, 0), end: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 11, 30) },
-  { id: 'e2', resourceId: 's2', title: 'Presentación', start: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 12, 0), end: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 13, 0) },
-  { id: 'e4', resourceId: 's3', title: 'Planificación Sprint', start: new Date(tomorrowDate.getFullYear(), tomorrowDate.getMonth(), tomorrowDate.getDate(), 10, 0), end: new Date(tomorrowDate.getFullYear(), tomorrowDate.getMonth(), tomorrowDate.getDate(), 12, 0) },
-  { id: 'e5', resourceId: 's4', title: 'Demo Interna', start: new Date(dayAfterTomorrowDate.getFullYear(), dayAfterTomorrowDate.getMonth(), dayAfterTomorrowDate.getDate(), 15, 0), end: new Date(dayAfterTomorrowDate.getFullYear(), dayAfterTomorrowDate.getMonth(), dayAfterTomorrowDate.getDate(), 16, 0) },
-  { id: 'e6', resourceId: 's5', title: 'Charla Tech', start: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 16, 0), end: new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate(), 17, 0) },
-]);
 
 const currentView = ref('week');
 const selectedDate = ref(new Date());
