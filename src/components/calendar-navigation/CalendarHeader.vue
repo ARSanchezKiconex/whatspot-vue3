@@ -13,7 +13,6 @@
 </template>
 
 <script setup>
-
 defineEmits(['previous', 'next', 'today']);
 </script>
 
@@ -22,27 +21,27 @@ defineEmits(['previous', 'next', 'today']);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px; /* Menos padding vertical */
+  padding: 10px 15px;
   border-bottom: 1px solid #eee;
   text-transform: capitalize;
 }
 
 .current-display {
-    font-size: 1.1em; /* Ligeramente más pequeño */
+    font-size: 1.1em;
     font-weight: bold;
     text-align: center;
     flex-grow: 1;
-    margin: 0 10px; /* Espacio alrededor */
+    margin: 0 10px;
 }
 
 .month-year .month, .week-range, .day-display {
     margin-right: 5px;
 }
+
 .year {
     color: #666;
     font-weight: normal;
 }
-
 
 .nav-button {
   background: none;
@@ -52,15 +51,15 @@ defineEmits(['previous', 'next', 'today']);
   padding: 0 8px;
   color: #333;
 }
+
 .today-button {
-    font-size: 0.9em; /* Botón 'Hoy' más pequeño */
+    font-size: 0.9em;
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 3px 10px;
-    margin: 0 10px; /* Espacio antes del botón > */
+    margin: 0 10px;
      background-color: #fff;
 }
-
 
 .nav-button:hover, .today-button:hover {
     color: #007bff;
@@ -68,5 +67,4 @@ defineEmits(['previous', 'next', 'today']);
 .today-button:hover {
      border-color: #007bff;
 }
-
 </style>

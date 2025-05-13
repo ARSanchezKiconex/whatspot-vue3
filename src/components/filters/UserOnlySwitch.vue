@@ -20,7 +20,6 @@ defineEmits(['update:modelValue']);
 </script>
 
 <style scoped>
-
 .v-row span {
   margin-left: 20px;
 }
@@ -28,5 +27,4 @@ defineEmits(['update:modelValue']);
 .switch-booking {
   margin-left: 10px;
 }
-
 </style>

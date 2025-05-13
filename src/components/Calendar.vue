@@ -1,7 +1,6 @@
 <template>
   <div class="calendar-layout">
     <div class="sidebar">
-      <!-- Vista MiniMes -->
       <v-card flat class="pa-2">
         <MiniMonthView 
           :selected-date="selectedDate"
@@ -10,33 +9,18 @@
           @next="navigateNext"
         />
       </v-card>
-
-      <!-- Selector de Vista -->
       <v-card flat class="pa-2 mt-4">
-        <div class="view-controls">
-          <label for="view-select">Vista:</label>
-          <v-select
-            id="view-select"
-            v-model="currentView"
-            :items="viewOptions"
-            item-value="value"
-            item-title="label"
-            density="compact"
-            variant="outlined"
-            style="margin-top: 10px; min-width: 150px;"
-          />
-        </div>
+        <CalendarViewSelector
+          v-model="currentView"
+          :options="viewOptions"
+        />
       </v-card>
-
-      <!-- Filtro de Recursos -->
       <v-card flat class="pa-2 mt-4">
         <ResourceFilter
           :all-resources="allResources"
           v-model:selected-building-ids="selectedBuildingIds"
         />
       </v-card>
-
-      <!-- Switch Solo Mío -->
       <v-card flat class="pa-2 mt-4">
         <UserOnlySwitch v-model="showOnlyMine" />
       </v-card>
@@ -44,13 +28,11 @@
 
     <div class="main-content">
       <CalendarHeader
-
         :view="currentView"
         @previous="navigatePrevious"
         @next="navigateNext"
         @today="goToToday"
       />
-
       <div class="calendar-body">
         <DayView
           v-if="currentView === 'day'"
@@ -74,7 +56,6 @@
           :events="filteredEvents"
         />
       </div>
-
       <v-btn
         class="fab-add-event"
         icon
@@ -84,25 +65,20 @@
       >
         <i class="fa-solid fa-plus"></i>
       </v-btn>
-    
-
       <FacilitySelectionModal 
         v-model:dialog="showFacilityModal"
         :installations="installations"
         @next="handleSelectedFacility"
       />
-
       <RoomSelectionModal
         v-model:dialog="showRoomModal"
         :rooms="availableRooms"
         @next="handleRoomSelected"
       />
-
       <DateSelectionModal
         v-model:dialog="showDateModal"
         @next="handleDateSelected"
       />
-
       <DetailsSelectionModal
         v-model:dialog="showDetailsModal"
         :booking="booking"
@@ -118,7 +94,6 @@ import FacilitySelectionModal from './modals/FacilitySelectionModal.vue';
 import RoomSelectionModal from './modals/RoomSelectionModal.vue';
 import DateSelectionModal from './modals/DateSelectionModal.vue';
 import DetailsSelectionModal from './modals/DetailsSelectionModal.vue';
-
 
 import { ref, reactive, computed, watch } from 'vue';
 import CalendarHeader from './calendar-navigation/CalendarHeader.vue';
@@ -137,26 +112,15 @@ const showRoomModal = ref(false);
 const showDateModal = ref(false);
 const showDetailsModal = ref(false); 
 
-// DATOS DE RESERVA
+// OBJETO RESERVA TEMPORAL
 const booking = reactive({
   facility: null,
   room: null,
   date: null,
   time: null,
-  title: null,
-  details: null
 });
 
-
-// PRUEBA
-const installations = ref([
-  { id: 'e1', name: 'Edificio 1', rooms:['Sala 01', 'Sala 02'] },
-  { id: 'e2', name: 'Edificio 2', rooms:['Sala 13', 'Sala 14'] },
-  { id: 'e3', name: 'Edificio 3', rooms:['Sala 25', 'Sala 26'] },
-]);
-
 const availableRooms = ref([]); 
-
 
 // HANDLERS
 function handleSelectedFacility(facility) {
@@ -187,6 +151,13 @@ function handleBooking(bookingData) {
   allEvents.value.push(bookingData);
   console.log('Reservas:', allEvents.value);
 }
+
+// PRUEBA
+const installations = ref([
+  { id: 'e1', name: 'Edificio 1', rooms:['Sala 01', 'Sala 02'] },
+  { id: 'e2', name: 'Edificio 2', rooms:['Sala 13', 'Sala 14'] },
+  { id: 'e3', name: 'Edificio 3', rooms:['Sala 25', 'Sala 26'] },
+]);
 
 // EVENTOS DE PRUEBA, mas adelante cargará las lista desde la base de datos
 const allEvents = ref([
@@ -325,8 +296,7 @@ const allEvents = ref([
 ]);
 
 
-
-// const value1 = ref(true);
+// FILTERS
 const showOnlyMine = ref(false);
 
 const viewOptions = [
@@ -336,6 +306,7 @@ const viewOptions = [
   { value: 'diary', label: 'Agenda'}
 ];
 
+// TODO: sustituir por lista de base de datos
 const allResources = ref([
   { id: 's1', name: 'Sala A', building: 'Edificio Principal' },
   { id: 's2', name: 'Sala B', building: 'Edificio Principal' },
@@ -355,7 +326,6 @@ const tomorrowDate = new Date(todayDate);
 tomorrowDate.setDate(todayDate.getDate() + 1);
 const dayAfterTomorrowDate = new Date(todayDate);
 dayAfterTomorrowDate.setDate(todayDate.getDate() + 2);
-
 
 const currentView = ref('week');
 const selectedDate = ref(new Date());
@@ -390,9 +360,9 @@ const filteredEvents = computed(() => {
   );
 });
 
-// --- Lógica de Navegación y Selección (sin cambios) ---
+// NAVIGATION
 function navigatePrevious() {
-  const d = new Date(selectedDate.value); // Crear copia
+  const d = new Date(selectedDate.value); 
   if (currentView.value === 'month') {
     d.setMonth(d.getMonth() - 1);
   } else if (currentView.value === 'week') {
@@ -400,117 +370,73 @@ function navigatePrevious() {
   } else { // day
     d.setDate(d.getDate() - 1);
   }
-  // Asignar una NUEVA instancia de Date para asegurar reactividad
+
   selectedDate.value = new Date(d);
 }
 
 function navigateNext() {
-  const d = new Date(selectedDate.value); // Crear copia
+  const d = new Date(selectedDate.value);
   if (currentView.value === 'month') {
     d.setMonth(d.getMonth() + 1);
   } else if (currentView.value === 'week') {
     d.setDate(d.getDate() + 7);
-  } else { // day
+  } else {
     d.setDate(d.getDate() + 1);
   }
-  // Asignar una NUEVA instancia de Date
   selectedDate.value = new Date(d);
 }
 
 function goToToday() {
-  // También usar nueva instancia aquí por consistencia
   selectedDate.value = new Date();
 }
 
-// Modificar también selectDateAndSwitchView
 function selectDateAndSwitchView(date) {
-  // Asegurar que sea una nueva instancia si viene de otro componente
   selectedDate.value = new Date(date);
   currentView.value = 'day';
 }
-
 </script>
 
 <style scoped>
 .calendar-layout {
   display: flex;
-  height: 100%; /* 100% de la altura de la ventana */
-  width: 100%; /* 100% del ancho de la ventana */
-  max-width: none; /* Eliminar el ancho máximo */
-  border: none; /* Eliminar borde si no lo deseas a pantalla completa */
-  border-radius: 0; /* Eliminar bordes redondeados a pantalla completa */
-  box-shadow: none; /* Eliminar sombra si no la deseas a pantalla completa */
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   font-family: sans-serif;
-  background-color: #ffffff; /* Fondo general ligero */
+  background-color: #ffffff;
 }
 
 .sidebar {
-  width: 240px; /* Ancho fijo para la barra lateral */
-  flex-shrink: 0; /* Evitar que se encoja */
+  width: 240px;
+  flex-shrink: 0;
   border-right: 1px solid #ccc;
-  background-color: #fff; /* Fondo blanco para la barra */
+  background-color: #fff;
   display: flex;
   flex-direction: column;
-  padding: 15px 0px; /* Padding vertical, sin horizontal */
-  /* Si quieres que la barra lateral también ocupe toda la altura: */
-  height: 100%; /* O 100vh si el padre es 100vh */
-}
-
-/* Estilos para el selector de vista */
-.calendar-view-selector {
-  margin-top: 20px;
-  padding: 0 10px; /* Padding horizontal */
-}
-
-.v-select {
-  width: auto;
-}
-
-/* Estilos del switch "Solo mío" */
-
-.v-row span {
-  margin-left: 10px;
-}
-
-.switch-booking {
-  margin-left: 10px;
+  padding: 15px 0px;
+  height: 100%;
 }
 
 .main-content {
-  flex-grow: 1; /* Ocupa el resto del espacio */
+  flex-grow: 1; 
   display: flex;
   flex-direction: column;
-  /* Si quieres que el contenido principal también ocupe toda la altura: */
-  height: 100%; /* O 100vh si el padre es 100vh */
+  height: 100%;
 }
-
-.view-controls label {
-    margin-right: 8px;
-    font-weight: bold;
-    font-size: 0.9em;
-}
-.view-controls select {
-    margin-top: 10px;
-    padding: 5px 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    min-width: 120px; /* Ancho mínimo */
-    color: #000000;
-    background-color: #e9ecef; /* Fondo gris claro */
-}
-
 
 .calendar-body {
-    flex-grow: 1; /* El cuerpo del calendario ocupa el espacio restante */
-    background-color: #fff; /* Fondo blanco para el area principal */
-    display: flex;
-    flex-direction: column;
-    /* Si quieres que el cuerpo del calendario también ocupe toda la altura restante: */
-    height: 100%;
+  flex-grow: 1;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .fab-add-event {
-  position: fixed; /* O fixed si quieres que esté fijo en la ventana */
+  position: fixed;
   bottom: 60px;
   right: 30px;
   width: 50px;
@@ -520,11 +446,11 @@ function selectDateAndSwitchView(date) {
   color: white;
   border: none;
   font-size: 2em;
-  line-height: 56px; /* Centrar el + verticalmente */
+  line-height: 56px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  z-index: 999; /* Asegurar que esté por encima del contenido */
+  z-index: 999;
   transition: background-color 0.2s ease;
 }
 </style>

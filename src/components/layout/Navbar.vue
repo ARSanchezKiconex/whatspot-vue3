@@ -15,7 +15,6 @@
             Calendario
           </RouterLink>
         </div>
-        
         <!-- Mobile menu button -->
         <button @click="toggleMobileMenu" class="md:hidden p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -24,7 +23,6 @@
           </svg>
         </button>
       </div>
-      
       <!-- Mobile Navigation -->
       <div v-show="isMobileMenuOpen" class="md:hidden mt-3 pb-3 space-y-1 animate-slide-up">
         <RouterLink to="/" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">

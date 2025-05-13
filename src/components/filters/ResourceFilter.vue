@@ -19,7 +19,7 @@
         @click="selectAll"
         v-if="hasSelection && !allSelected"
       >
-        Seleccionar Todos
+      Seleccionar Todos
       </v-btn>
       <v-btn
         density="compact"
@@ -93,7 +93,6 @@ function deselectAll() {
 
 <style scoped>
 .resource-filter {
-  padding: 15px 10px;
   font-size: 0.9em;
 }
 

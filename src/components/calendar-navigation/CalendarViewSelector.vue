@@ -35,4 +35,14 @@ defineEmits(['update:modelValue']);
     font-weight: bold;
     font-size: 1em;
 }
+
+.view-controls select {
+  margin-top: 10px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 120px;
+  color: #000000;
+  background-color: #e9ecef;
+}
 </style>
