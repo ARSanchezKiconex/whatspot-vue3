@@ -9,10 +9,7 @@
         <!-- Desktop Navigation -->
         <div class="hidden md:flex space-x-6">
           <RouterLink to="/" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Inicio
-          </RouterLink>
-          <RouterLink to="/calendar" class="py-2 text-gray-700 hover:text-primary-600 transition-colors" active-class="font-medium text-primary-600">
-            Calendario
+            Perfil
           </RouterLink>
         </div>
         <!-- Mobile menu button -->
@@ -26,17 +23,14 @@
       <!-- Mobile Navigation -->
       <div v-show="isMobileMenuOpen" class="md:hidden mt-3 pb-3 space-y-1 animate-slide-up">
         <RouterLink to="/" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">
-          Inicio
-        </RouterLink>
-        <RouterLink to="/calendar" class="block py-2 px-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-md" active-class="font-medium text-primary-600 bg-primary-50">
-          Calendario
+          Perfil
         </RouterLink>
       </div>
     </nav>
   </header>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -44,5 +38,9 @@ const isMobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+export default {
+  name: 'Navbar'
 }
 </script>
