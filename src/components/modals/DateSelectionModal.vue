@@ -7,7 +7,6 @@
 
       <v-card-text>
 
-        <!-- Navegación de semanas -->
         <div class="d-flex justify-between align-center mb-3">
           <v-btn icon variant="text" @click="goToPreviousWeek">
             <i class="fa-solid fa-chevron-left"></i>
@@ -20,7 +19,6 @@
           </v-btn>
         </div>
 
-        <!-- Días -->
         <div class="d-flex justify-space-around mb-5">
           <div
             v-for="day in weekDays"
@@ -44,8 +42,6 @@
             </v-btn>
           </div>
         </div>
-
-        <!-- Horas en scroll -->
         <div class="hour-scroll">
           <div
             v-for="hour in hours"
@@ -56,7 +52,6 @@
             <div class="hour-text">
               {{ hour }}
             </div>
-
             <!-- Aquí podría ir una marca de ocupado en el futuro -->
             <!-- <div class="overlay" v-if="isHourTaken(hour)">Ocupado</div> -->
           </div>
@@ -70,8 +65,13 @@
 <script setup>
 import { defineProps, defineEmits, ref, watch, computed } from 'vue'
 
-const props = defineProps({ dialog: Boolean })
-const emit = defineEmits(['update:dialog', 'next'])
+const props = defineProps({ 
+  dialog: Boolean 
+})
+const emit = defineEmits([
+  'update:dialog', 
+  'next'
+])
 
 const dialog = ref(props.dialog)
 const selectedDate = ref(new Date().toISOString().substring(0, 10))
@@ -81,7 +81,6 @@ const today = new Date()
 const offset = today.getDay() === 0 ? -6 : 1 - today.getDay()
 const baseDate = ref(new Date(today.setDate(today.getDate() + offset)))
 
-// 24 horas de 00:00 a 23:00
 const hours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`)
 
 const weekDays = computed(() => {

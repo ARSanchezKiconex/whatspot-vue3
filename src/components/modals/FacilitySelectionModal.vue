@@ -5,7 +5,7 @@
         Selecciona una instalación
       </v-card-title>
       <v-card-text>
-        <v-list class="custom-list">
+        <v-list>
           <v-list-item
             v-for="facility in installations"
             :key="facility.id"
@@ -32,7 +32,6 @@ const emit = defineEmits(['update:dialog', 'next'])
 
 const internalDialog = ref(props.dialog)
 
-// Mantener sincronía con v-model del padre
 watch(() => props.dialog, (val) => {
   internalDialog.value = val
 })
@@ -48,10 +47,6 @@ function selectFacility(facility) {
 </script>
 
 <style scoped>
-.custom-list {
-  padding: 0;
-}
-
 .custom-list-item {
   display: flex;
   align-items: center;
@@ -69,9 +64,5 @@ function selectFacility(facility) {
 .custom-item-text {
   font-size: 16px;
   color: #333;
-}
-
-.v-dialog__content {
-  padding: 0;
 }
 </style>

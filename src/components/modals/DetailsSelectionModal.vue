@@ -6,7 +6,6 @@
       </v-card-title>
       <v-card-text class="dialog-content">
         <v-container>
-          <!-- Línea 1: Edificio -->
           <v-row>
             <v-col cols="12">
               <v-select
@@ -16,12 +15,9 @@
                 return-object
                 @update:modelValue="onFacilityChange"
                 item-title="name"
-                class="custom-input"
               />
             </v-col>
           </v-row>
-
-          <!-- Línea 2: Sala -->
           <v-row>
             <v-col cols="12">
               <v-select
@@ -29,12 +25,9 @@
                 :items="availableRooms"
                 label="Sala"
                 :disabled="!form.facility"
-                class="custom-input"
               />
             </v-col>
           </v-row>
-
-          <!-- Línea 3: Desde -->
           <v-row>
             <v-col cols="6">
               <v-text-field
@@ -42,7 +35,6 @@
                 label="Desde"
                 type="date"
                 :min="today"
-                class="custom-input"
               />
             </v-col>
             <v-col cols="6">
@@ -50,12 +42,9 @@
                 v-model="form.timeFrom"
                 label="Desde"
                 :items="timeIntervals"
-                class="custom-input"
               />
             </v-col>
           </v-row>
-
-          <!-- Línea 4: Hasta -->
           <v-row>
             <v-col cols="6">
               <v-text-field
@@ -63,7 +52,6 @@
                 label="Hasta"
                 type="date"
                 :min="form.dateFrom || today"
-                class="custom-input"
               />
             </v-col>
             <v-col cols="6">
@@ -71,35 +59,27 @@
                 v-model="form.timeTo"
                 label="Hasta"
                 :items="timeIntervals"
-                class="custom-input"
               />
             </v-col>
           </v-row>
-
-          <!-- Línea 5: Título -->
           <v-row>
             <v-col cols="12">
               <v-text-field
                 v-model="form.title"
                 label="Título de la Reserva"
-                class="custom-input"
               />
             </v-col>
           </v-row>
-
-          <!-- Línea 6: Detalles -->
           <v-row>
             <v-col cols="12">
               <v-textarea
                 v-model="form.details"
                 label="Detalles de la Reserva"
-                class="custom-input"
               />
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
-
       <v-card-actions>
         <v-spacer />
         <v-btn color="primary" @click="confirmReservation" class="confirm-btn">
@@ -121,11 +101,9 @@ const props = defineProps({
 })
 
 const today = new Date().toISOString().substring(0, 10)
-
 const availableRooms = ref([])
 const timeIntervals = ref([])
 
-// Generate time intervals in 15-minute increments
 function generateTimeIntervals() {
   const intervals = []
   for (let hour = 0; hour < 24; hour++) {
@@ -138,7 +116,6 @@ function generateTimeIntervals() {
   return intervals
 }
 
-// Initialize the time intervals
 timeIntervals.value = generateTimeIntervals()
 
 const emit = defineEmits(['update:dialog', 'confirmBooking'])
@@ -169,7 +146,7 @@ function sumarUnaHora(hora) {
 function toDateString(date) {
   if (!date) return ''
   const d = new Date(date)
-  return d.toISOString().split('T')[0] // Devuelve "YYYY-MM-DD"
+  return d.toISOString().split('T')[0]
 }
 
 function isValidDateTimeRange() {
@@ -189,15 +166,12 @@ function onFacilityChange(newFacilityName) {
   form.value.room = '' // borrar solo cuando cambia manualmente
 }
 
-// Sincronización
-
 watch(() => props.dialog, (val) => {
   dialog.value = val
 
-  // Cuando se abre el modal, copiar los valores del booking al form
   if (val) {
     form.value.facility = props.booking.facility.name || ''
-    
+
     const selectedFacility = props.installations.find(i => i.name === form.value.facility)
     availableRooms.value = selectedFacility?.rooms || []
     form.value.room = props.booking.room || ''
@@ -215,7 +189,6 @@ watch(dialog, (val) => {
   emit('update:dialog', val)
 })
 
-// Emitir los datos finales
 function confirmReservation() {
   if (!isValidDateTimeRange()) {
     alert("La fecha/hora de finalización no puede ser anterior a la de inicio.")
@@ -228,22 +201,14 @@ function confirmReservation() {
 </script>
 
 <style scoped>
-.custom-input {
-  margin-bottom: 16px;
-}
-
 .confirm-btn {
   font-weight: bold;
   text-transform: uppercase;
 }
 
 .dialog-content {
-  max-height: 400px; /* Ajustar según el tamaño necesario */
-  overflow-y: auto; /* Habilita el scroll */
-}
-
-.v-dialog__content {
-  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .v-btn {
