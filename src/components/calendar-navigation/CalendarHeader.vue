@@ -23,7 +23,6 @@ defineEmits(['previous', 'next', 'today']);
   justify-content: space-between;
   align-items: center;
   padding: 10px 15px; /* Menos padding vertical */
-  background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
   text-transform: capitalize;
 }

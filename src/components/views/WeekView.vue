@@ -107,8 +107,8 @@ function formatTime(time) {
 .week-view {
   display: flex;
   flex-direction: column;
-  height: 600px; /* Altura fija para scroll interno si es necesario */
   border-top: 1px solid #eee;
+  overflow: auto;
 }
 
 .header-row {
@@ -205,7 +205,7 @@ function formatTime(time) {
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid #eee;
-  height: 60px;
+  height: 125px;
   flex-shrink: 0;
 }
 

@@ -1,51 +1,46 @@
 <template>
   <div class="calendar-layout">
-  <v-navigation-drawer
-    app
-    fixed
-    width="240"
-    class="sidebar"
-  >
-    <!-- Vista MiniMes -->
-    <v-card flat class="pa-2">
-      <MiniMonthView 
-        :selected-date="selectedDate"
-        @dateSelected="selectedDate = $event"
-        @previous="navigatePrevious"
-        @next="navigateNext"
-      />
-    </v-card>
-
-    <!-- Selector de Vista -->
-    <v-card flat class="pa-2 mt-4">
-      <div class="view-controls">
-        <label for="view-select">Vista:</label>
-        <v-select
-          id="view-select"
-          v-model="currentView"
-          :items="viewOptions"
-          item-value="value"
-          item-title="label"
-          density="compact"
-          variant="outlined"
-          style="margin-top: 10px; min-width: 150px;"
+    <div class="sidebar">
+      <!-- Vista MiniMes -->
+      <v-card flat class="pa-2">
+        <MiniMonthView 
+          :selected-date="selectedDate"
+          @dateSelected="selectedDate = $event"
+          @previous="navigatePrevious"
+          @next="navigateNext"
         />
-      </div>
-    </v-card>
+      </v-card>
 
-    <!-- Filtro de Recursos -->
-    <v-card flat class="pa-2 mt-4">
-      <ResourceFilter
-        :all-resources="allResources"
-        v-model:selected-building-ids="selectedBuildingIds"
-      />
-    </v-card>
+      <!-- Selector de Vista -->
+      <v-card flat class="pa-2 mt-4">
+        <div class="view-controls">
+          <label for="view-select">Vista:</label>
+          <v-select
+            id="view-select"
+            v-model="currentView"
+            :items="viewOptions"
+            item-value="value"
+            item-title="label"
+            density="compact"
+            variant="outlined"
+            style="margin-top: 10px; min-width: 150px;"
+          />
+        </div>
+      </v-card>
 
-    <!-- Switch Solo Mío -->
-    <v-card flat class="pa-2 mt-4">
-      <UserOnlySwitch v-model="showOnlyMine" />
-    </v-card>
-  </v-navigation-drawer>
+      <!-- Filtro de Recursos -->
+      <v-card flat class="pa-2 mt-4">
+        <ResourceFilter
+          :all-resources="allResources"
+          v-model:selected-building-ids="selectedBuildingIds"
+        />
+      </v-card>
+
+      <!-- Switch Solo Mío -->
+      <v-card flat class="pa-2 mt-4">
+        <UserOnlySwitch v-model="showOnlyMine" />
+      </v-card>
+    </div>
 
     <div class="main-content">
       <CalendarHeader
@@ -89,32 +84,32 @@
       >
         <i class="fa-solid fa-plus"></i>
       </v-btn>
+    
+
+      <FacilitySelectionModal 
+        v-model:dialog="showFacilityModal"
+        :installations="installations"
+        @next="handleSelectedFacility"
+      />
+
+      <RoomSelectionModal
+        v-model:dialog="showRoomModal"
+        :rooms="availableRooms"
+        @next="handleRoomSelected"
+      />
+
+      <DateSelectionModal
+        v-model:dialog="showDateModal"
+        @next="handleDateSelected"
+      />
+
+      <DetailsSelectionModal
+        v-model:dialog="showDetailsModal"
+        :booking="booking"
+        :installations="installations"
+        @confirmBooking="handleBooking"
+      />
     </div>
-
-    <FacilitySelectionModal 
-      v-model:dialog="showFacilityModal"
-      :installations="installations"
-      @next="handleSelectedFacility"
-    />
-
-    <RoomSelectionModal
-      v-model:dialog="showRoomModal"
-      :rooms="availableRooms"
-      @next="handleRoomSelected"
-    />
-
-    <DateSelectionModal
-      v-model:dialog="showDateModal"
-      @next="handleDateSelected"
-    />
-
-    <DetailsSelectionModal
-      v-model:dialog="showDetailsModal"
-      :booking="booking"
-      :installations="installations"
-      @confirmBooking="handleBooking"
-    />
-
   </div>
 </template>
 
@@ -304,6 +299,28 @@ const allEvents = ref([
     timeTo: '12:00',
     title: 'Evaluación de desempeño',
     details: 'Trimestre 1'
+  },
+  {
+    id: 11,
+    facility: 'Edificio Principal',
+    room: 's2',
+    dateFrom: '2025-05-07',
+    timeFrom: '10:15',
+    dateTo: '2025-05-09',
+    timeTo: '11:00',
+    title: 'Reunión de ventas',
+    details: 'Estrategia para el próximo trimestre'
+  },
+  {
+    id: 12,
+    facility: 'Edificio Principal',
+    room: 's2',
+    dateFrom: '2025-05-07',
+    timeFrom: '11:15',
+    dateTo: '2025-05-06',
+    timeTo: '12:30',
+    title: 'Café con el equipo de marketing',
+    details: 'Nuevas campañas'
   }
 ]);
 
@@ -325,6 +342,11 @@ const allResources = ref([
   { id: 's3', name: 'Despacho 1', building: 'Anexo Norte' },
   { id: 's4', name: 'Sala Grande', building: 'Anexo Norte' },
   { id: 's5', name: 'Auditorio', building: 'Edificio Sur' },
+  { id: 's6', name: 'Sala de Juntas', building: 'Edificio Sur' },
+  { id: 's7', name: 'Sala de Conferencias', building: 'Edificio Sur' },
+  { id: 's8', name: 'Sala de Capacitación', building: 'Edificio Sur' },
+  { id: 's9', name: 'Sala de Proyectos', building: 'Edificio Sur' },
+  { id: 's10', name: 'Sala de Innovación', building: 'Edificio Sur' },
 ]);
 
 const todayDate = new Date();
@@ -481,6 +503,8 @@ function selectDateAndSwitchView(date) {
 .calendar-body {
     flex-grow: 1; /* El cuerpo del calendario ocupa el espacio restante */
     background-color: #fff; /* Fondo blanco para el area principal */
+    display: flex;
+    flex-direction: column;
     /* Si quieres que el cuerpo del calendario también ocupe toda la altura restante: */
     height: 100%;
 }

@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white shadow-sm">
+  <header class="bg-white shadow-sm border-b border-black">
     <nav class="container mx-auto px-4 py-3">
       <div class="flex justify-between items-center">
         <!-- Logo -->
@@ -41,7 +41,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import CalendarHeader from '../date-picker/CalendarHeader.vue';
 
 const isMobileMenuOpen = ref(false)
 
@@ -49,9 +48,3 @@ const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 </script>
-
-<style scoped>
-#title-nav {
-  background-color: aqua;
-}
-</style>
