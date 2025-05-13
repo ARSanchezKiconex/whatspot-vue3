@@ -1,178 +1,223 @@
 <template>
-  <div class="calendar-grid">
-    <div class="grid-header">
-      <div
-        v-for="(dayName, index) in dayNames"
-        :key="index"
-        class="header-cell"
-      >
-        {{ dayName }}
-      </div>
+  <div class="month-view">
+    <div class="month-header">
+      <button @click="prevMonth">&lt;</button>
+      <h2>{{ displayedMonth }} {{ displayedYear }}</h2>
+      <button @click="nextMonth">&gt;</button>
     </div>
-    <div class="grid-body">
+    <div class="week-days-header">
+      <div v-for="dayName in shortWeekDays" :key="dayName" class="day-name">{{ dayName }}</div>
+    </div>
+    <div class="month-grid">
       <div
-        v-for="(week, weekIndex) in monthGrid"
-        :key="weekIndex"
-        class="grid-row"
+        v-for="dayInfo in daysInMonth"
+        :key="dayInfo.date.toISOString()"
+        class="day-cell"
+        :class="{
+          'empty': !dayInfo.isCurrentMonth,
+          'has-events': hasEventsOnDay(dayInfo.date)
+        }"
+        @click="selectDay(dayInfo.date)"
       >
-        <div
-          v-for="(day, dayIndex) in week"
-          :key="dayIndex"
-          class="grid-cell"
-          :class="{
-            'today': isToday(day),
-            'other-month': isOtherMonth(day),
-            'selected': isSelected(day)
-          }"
-          @click="selectDay(day)"
-        >
-          <span class="day-number">{{ day ? day.getDate() : '' }}</span>
+        <span class="day-number">{{ dayInfo.dayNumber }}</span>
+        <div v-if="hasEventsOnDay(dayInfo.date)" class="event-indicator">
+          {{ getEventsCountOnDay(dayInfo.date) }} evento(s)
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue';
-import dayjs from 'dayjs';
-import 'dayjs/locale/es';
-
-dayjs.locale('es');
 
 const props = defineProps({
-  year: {
-    type: Number,
-    required: true,
-  },
-  month: {
-    type: Number, // 0-indexed
-    required: true,
-  },
-  selectedDate: {
-    type: Date,
-    default: null,
-  },
+  selectedDate: Date,
+  resources: Array,
+  events: Array,
 });
 
-const emit = defineEmits(['update:selectedDate']);
+const currentDate = ref(new Date(props.selectedDate));
 
-const dayNames = computed(() => {
-  const startOfWeek = dayjs().startOf('week');
-  return Array.from({ length: 7 }, (_, i) =>
-    startOfWeek.add(i, 'day').format('dd')
-  );
+const displayedMonth = computed(() => {
+  return currentDate.value.toLocaleDateString('es-ES', { month: 'long' });
 });
 
-const monthGrid = computed(() => {
-  const firstDayOfMonth = dayjs(new Date(props.year, props.month, 1)).startOf(
-    'month'
-  );
-  const lastDayOfMonth = dayjs(new Date(props.year, props.month, 1)).endOf(
-    'month'
-  );
-  const firstDayOfCalendar = firstDayOfMonth.startOf('week');
-  const lastDayOfCalendar = lastDayOfMonth.endOf('week');
+const displayedYear = computed(() => {
+  return currentDate.value.getFullYear();
+});
 
-  const totalDays = lastDayOfCalendar.diff(firstDayOfCalendar, 'day') + 1;
-  const daysArray = Array.from({ length: totalDays }, (_, i) =>
-    firstDayOfCalendar.add(i, 'day').toDate()
-  );
+const shortWeekDays = computed(() => {
+  const days = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+  return days;
+});
 
-  const weeks = [];
-  for (let i = 0; i < totalDays; i += 7) {
-    weeks.push(daysArray.slice(i, i + 7));
+const daysInMonth = computed(() => {
+  const year = currentDate.value.getFullYear();
+  const month = currentDate.value.getMonth();
+  const firstDayOfMonth = new Date(year, month, 1);
+  const lastDayOfMonth = new Date(year, month + 1, 0);
+  const days = [];
+
+  // Calcular los días del mes anterior para la primera semana
+  const firstDayWeekday = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay(); // Lunes es 1, Domingo es 7
+  for (let i = firstDayWeekday - 1; i > 0; i--) {
+    const prevMonthDay = new Date(year, month, 1 - i);
+    days.push({
+      date: prevMonthDay,
+      dayNumber: prevMonthDay.getDate(),
+      isCurrentMonth: false,
+    });
   }
-  return weeks;
+
+  // Añadir los días del mes actual
+  for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+    const currentDay = new Date(year, month, i);
+    days.push({
+      date: currentDay,
+      dayNumber: currentDay.getDate(),
+      isCurrentMonth: true,
+    });
+  }
+
+  // Calcular los días del mes siguiente para la última semana
+  const lastDayWeekday = lastDayOfMonth.getDay() === 0 ? 7 : lastDayOfMonth.getDay();
+  const daysToAdd = 7 - lastDayWeekday;
+  for (let i = 1; i <= daysToAdd; i++) {
+    const nextMonthDay = new Date(year, month + 1, i);
+    days.push({
+      date: nextMonthDay,
+      dayNumber: nextMonthDay.getDate(),
+      isCurrentMonth: false,
+    });
+  }
+
+  return days;
 });
 
-const today = computed(() => new Date());
+function prevMonth() {
+  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() - 1, 1);
+}
 
-const isToday = (date: Date | null) => {
-  return date ? dayjs(date).isSame(today.value, 'day') : false;
-};
+function nextMonth() {
+  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1);
+}
 
-const isOtherMonth = (date: Date | null) => {
-  if (!date) return false;
-  const currentMonth = props.month;
-  return dayjs(date).month() !== currentMonth;
-};
+function hasEventsOnDay(date) {
+  const dayStart = new Date(date);
+  dayStart.setHours(0, 0, 0, 0);
+  const dayEnd = new Date(date);
+  dayEnd.setHours(23, 59, 59, 999);
 
-const isSelected = (date: Date | null) => {
-  return date && props.selectedDate
-    ? dayjs(date).isSame(props.selectedDate, 'day')
-    : false;
-};
+  return props.events.some(event => event.start >= dayStart && event.start <= dayEnd);
+}
 
-const selectDay = (date: Date | null) => {
-  if (date && !isOtherMonth(date)) {
-    emit('update:selectedDate', date);
-  }
-};
+function getEventsCountOnDay(date) {
+  const dayStart = new Date(date);
+  dayStart.setHours(0, 0, 0, 0);
+  const dayEnd = new Date(date);
+  dayEnd.setHours(23, 59, 59, 999);
+
+  return props.events.filter(event => event.start >= dayStart && event.start <= dayEnd).length;
+}
+
+function selectDay(date) {
+  // Aquí puedes emitir un evento o actualizar otra variable para mostrar la vista semanal de este día.
+  console.log('Día seleccionado:', date);
+}
 </script>
 
 <style scoped>
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+.month-view {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.grid-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-}
-
-.header-cell {
-  padding: 8px;
-  text-align: center;
-  font-weight: bold;
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
 }
 
-.grid-body {
-  /* No necesitamos un display específico aquí, los elementos hijos (grid-row) fluirán */
+.month-header button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: white;
 }
 
-.grid-row {
+.month-header h2 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.week-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #eee;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.day-name {
+  text-align: center;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.month-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }
 
-.grid-cell {
+.day-cell {
   padding: 10px;
-  text-align: center;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   cursor: pointer;
+  position: relative;
 }
 
-.grid-cell:last-child {
+.day-cell:last-child {
   border-right: none;
 }
 
-.grid-row:last-child .grid-cell {
-  border-bottom: none;
+/* Ajustar la altura para que las semanas sean consistentes */
+.month-grid .day-cell:nth-child(7n) ~ .day-cell {
+  /* No aplicar borde inferior al final de cada semana */
 }
 
-.today {
-  background-color: #f0f9eb;
-  color: #67c23a;
-  font-weight: bold;
-}
-
-.other-month {
-  color: #bbb;
-}
-
-.selected {
-  background-color: #409eff;
-  color: white;
-  font-weight: bold;
+.day-cell.empty {
+  color: #ccc;
 }
 
 .day-number {
-  display: block;
+  font-size: 0.9em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.has-events {
+  /* Puedes añadir un estilo visual para los días con eventos */
+  /* background-color: #e0f7fa; */
+}
+
+.event-indicator {
+  background-color: #007bff;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.7em;
 }
 </style>

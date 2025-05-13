@@ -1,7 +1,13 @@
 <template>
   <div class="mini-month-view">
     <div class="mini-header">
-      <span>{{ monthName }} {{ year }}</span>
+      <button @click="prevMonth" class="nav-button">
+        <i class="fa-solid fa-caret-left"></i>
+      </button>
+        <span class="month-name">{{ monthName }} {{ year }}</span>
+      <button @click="nextMonth" class="nav-button">
+        <i class="fa-solid fa-caret-right"></i>
+      </button>
     </div>
     <div class="mini-weekdays">
       <span v-for="day in weekdays" :key="day">{{ day }}</span>
@@ -25,74 +31,82 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
-const emit = defineEmits(['dateSelected']); // Puedes usar también 'update:selectedDate' si quieres v-model
-
+const emit = defineEmits(['dateSelected']);
 const props = defineProps({
-  selectedDate: Date, // La fecha actualmente seleccionada en el calendario principal
+  selectedDate: Date,
 });
+
+const currentDate = ref(new Date(props.selectedDate));
+
+// Actualizar `currentDate` si cambia `props.selectedDate` externamente
+watch(() => props.selectedDate, (newVal) => {
+  currentDate.value = new Date(newVal);
+});
+
+function prevMonth() {
+  const newDate = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() - 1, 1);
+  currentDate.value = newDate;
+}
+
+function nextMonth() {
+  const newDate = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1);
+  currentDate.value = newDate;
+}
+
+const year = computed(() => currentDate.value.getFullYear());
+const month = computed(() => currentDate.value.getMonth());
+const monthName = computed(() => currentDate.value.toLocaleDateString('es-ES', { month: 'long' }));
 
 const weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
-const year = computed(() => props.selectedDate.getFullYear());
-const month = computed(() => props.selectedDate.getMonth()); // 0-indexed
-const monthName = computed(() => props.selectedDate.toLocaleDateString('es-ES', { month: 'long' }));
-
-// Lógica para calcular días (similar a CalendarGrid, pero simplificada)
 const daysOfMonth = computed(() => {
   const days = [];
-  const currentMonthDate = new Date(year.value, month.value, 1);
+  const firstOfMonth = new Date(year.value, month.value, 1);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const selectedDayTime = new Date(props.selectedDate); // Copia para evitar mutaciones
+  const selectedDayTime = new Date(props.selectedDate);
   selectedDayTime.setHours(0, 0, 0, 0);
 
-  const daysInMonth = new Date(year.value, month.value + 1, 0).getDate();
-  let firstDayOfWeek = currentMonthDate.getDay();
+  let firstDayOfWeek = firstOfMonth.getDay();
   if (firstDayOfWeek === 0) firstDayOfWeek = 6; else firstDayOfWeek -= 1;
 
   const daysInPreviousMonth = new Date(year.value, month.value, 0).getDate();
   for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-    days.push({ number: daysInPreviousMonth - i, isCurrentMonth: false, isSelected: false, isToday: false });
+    const dayDate = new Date(year.value, month.value - 1, daysInPreviousMonth - i);
+    days.push({ number: dayDate.getDate(), isCurrentMonth: false, isSelected: false, isToday: false });
   }
 
-  for (let day = 1; day <= daysInMonth; day++) {
+  const daysInThisMonth = new Date(year.value, month.value + 1, 0).getDate();
+  for (let day = 1; day <= daysInThisMonth; day++) {
     const loopDate = new Date(year.value, month.value, day);
-    loopDate.setHours(0,0,0,0); // Normalizar para comparar
+    loopDate.setHours(0, 0, 0, 0);
     days.push({
       number: day,
       isCurrentMonth: true,
       isSelected: loopDate.getTime() === selectedDayTime.getTime(),
       isToday: loopDate.getTime() === today.getTime(),
-      date: loopDate // Guardamos la fecha por si se quisiera añadir click
+      date: loopDate,
     });
   }
 
-  const gridCells = 35; // Usar 5 semanas para la vista mini
-  let nextMonthDay = 1;
-  while (days.length < gridCells) {
-    days.push({ number: nextMonthDay++, isCurrentMonth: false, isSelected: false, isToday: false });
+  const totalCells = 42;
+  let nextDay = 1;
+  while (days.length < totalCells) {
+    const dayDate = new Date(year.value, month.value + 1, nextDay++);
+    days.push({ number: dayDate.getDate(), isCurrentMonth: false, isSelected: false, isToday: false });
   }
 
-  // Si el mes tiene 6 semanas y el día seleccionado está en la última, mostrar 42
-  if(days.length >= 35 && firstDayOfWeek + daysInMonth > 35 && days.slice(35).some(d => d.isSelected)) {
-       while (days.length < 42) {
-           days.push({ number: nextMonthDay++, isCurrentMonth: false, isSelected: false, isToday: false });
-       }
-       return days.slice(0,42);
-  }
-
-
-  return days.slice(0, gridCells); // Devolver 35 celdas por defecto
+  return days;
 });
 
 function selectDay(day) {
-  if (!day.isCurrentMonth) return; // Opcional: solo permitir selección en el mes actual
+  if (!day.isCurrentMonth) return;
   emit('dateSelected', day.date);
 }
-
 </script>
+
 
 <style scoped>
 .mini-month-view {
@@ -102,6 +116,11 @@ function selectDay(day) {
   border: 1px solid #eee;
   border-radius: 4px;
   background-color: #fff;
+}
+
+.month-name{
+  margin: 0 15px;
+  cursor: default;
 }
 
 .mini-header {
@@ -127,6 +146,7 @@ function selectDay(day) {
   padding: 4px 2px;
   border-radius: 3px;
   line-height: 1.5; /* Mejor espaciado vertical */
+  cursor: pointer;
 }
 
 .other-month {
@@ -134,8 +154,13 @@ function selectDay(day) {
 }
 
 .is-today {
-  background-color: #eaf6ff;
+  /* background-color: #eaf6ff; */
+  color:#007bff;
   font-weight: bold;
+}
+
+.nav-button:hover {
+    color: #007bff;
 }
 
 .is-selected {

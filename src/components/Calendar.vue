@@ -10,7 +10,9 @@
     <v-card flat class="pa-2">
       <MiniMonthView 
         :selected-date="selectedDate"
-        @dateSelected="selectedDate = $event" 
+        @dateSelected="selectedDate = $event"
+        @previous="navigatePrevious"
+        @next="navigateNext"
       />
     </v-card>
 
@@ -365,17 +367,6 @@ const filteredEvents = computed(() => {
     visibleResourceIds.has(event.resourceId)
   );
 });
-
-const isMiniWeekViewVisible = ref(false);
-
-const openMiniWeekViewModal = () => {
-  isMiniWeekViewVisible.value = true;
-};
-
-const closeMiniWeekViewModal = () => {
-  isMiniWeekViewVisible.value = false;
-};
-
 
 // --- Lógica de Navegación y Selección (sin cambios) ---
 function navigatePrevious() {

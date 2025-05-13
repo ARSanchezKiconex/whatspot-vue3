@@ -1,21 +1,3 @@
-export interface Building {
-  id: string
-  name: string
-  description?: string
-  image?: string
-  rooms: Room[]
-}
-
-export interface Room {
-  id: string
-  buildingId: string
-  name: string
-  capacity: number
-  description?: string
-  image?: string
-  features: string[]
-}
-
 export interface Reservation {
   id: string
   title: string
@@ -29,18 +11,4 @@ export interface Reservation {
   status: 'pending' | 'confirmed' | 'cancelled'
   buildingId: string
   roomId: string
-}
-
-export interface TimeSlot {
-  id: string
-  startTime: string
-  endTime: string
-}
-
-export interface DayType {
-  date: Date
-  dayOfMonth: number
-  isCurrentMonth: boolean
-  isToday: boolean
-  hasReservations: boolean
 }
