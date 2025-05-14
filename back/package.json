@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1"
+  },
+  "devDependencies": {
+    "db-migrate": "^0.11.14",
+    "db-migrate-mysql": "^3.0.0"
+  }
+}
