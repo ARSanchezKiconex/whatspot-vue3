@@ -42,26 +42,19 @@ class Booking {
   
   async create() {
     const data = this.getData();
-
     const result = await mysqlAdapter.query("INSERT INTO booking set ? ", data);
-    if (result.error) {
-      return result;
-    }
+    return result;
   }
 
   async update() {
     const data = this.getData();
     const result = await mysqlAdapter.query("UPDATE booking set ? WHERE uuid = ?", [data, this.uuid]);
-    if (result.error) {
-      return result;
-    }
+    return result;
   }
 
   async delete() {
     const result = await mysqlAdapter.query("DELETE FROM booking WHERE uuid = ?", [this.uuid]);
-    if (result.error) {
-      return result;
-    }
+    return result;
   }
 
   async list() {

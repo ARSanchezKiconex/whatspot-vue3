@@ -22,17 +22,13 @@ class Facility {
   async create() {
     const data = this.getData();
     const result = await mysqlAdapter.query("INSERT INTO facility SET ?", data);
-    if (result.error) {
-      return result;
-    }
+    return result;
   }
 
   async update() {
     const data = this.getData();
     const result = await mysqlAdapter.query("UPDATE facility SET ? WHERE uuid = ?", [data, this.uuid]);
-    if (result.error) {
-      return result;
-    }
+    return result;
   }
 
   async delete() {
