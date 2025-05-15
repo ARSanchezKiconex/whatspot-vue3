@@ -96,3 +96,4 @@ bookingCtrl.deleteBooking = async (req, res) => {
   }
 };
 
+module.exports = bookingCtrl;

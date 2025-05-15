@@ -23,10 +23,8 @@ roomCtrl.createRoom = async (req, res) => {
   }
 };
 
+
 roomCtrl.getRooms = async (req, res) => {
-
-  console.log('legando a getRooms');
-
   const room = new Room();
   const result = await room.list();
 
@@ -37,25 +35,27 @@ roomCtrl.getRooms = async (req, res) => {
   }
 };
 
+
 roomCtrl.getRoom = async (req, res) => {
-  // const uuid = req.params.uuid;
+  const uuid = req.params.uuid;
 
-  // let room = new Room(uuid);
-  // const result = await room.get(); // OJO CON EL GET Y LA FORMA DE SACAR LA SALA DE AQUI
+  let room = new Room(uuid);
+  const result = await room.read();
 
-  // if (result.error) {
+  if (result.error) {
     return res.json({ ok: false, message: "Error al obtener la sala" });
-  // } else {
-  //   return res.json(result);
-  // }
+  } else {
+    return res.json(result);
+  }
 };
+
 
 roomCtrl.getRoomsByFacility = async (req, res) => {
   const facility_uuid = req.params.facility_uuid;
 
   const room = new Room();
   const filter = { 'facility_uuid': facility_uuid };
-  const result = await room.list(filter);
+  const result = await room.read(filter);
 
   if (result.error) {
     return res.json({ ok: false, message: "Error al obtener las salas para la instalación" });
@@ -63,6 +63,7 @@ roomCtrl.getRoomsByFacility = async (req, res) => {
     return res.json(result);
   }
 };
+
 
 roomCtrl.editRoom = async (req, res) => {
   const uuid = req.params.uuid;
@@ -77,6 +78,7 @@ roomCtrl.editRoom = async (req, res) => {
     return res.json(result);
   }
 };
+
 
 roomCtrl.deleteRoom = async (req, res) => {
   const uuid = req.params.uuid;
