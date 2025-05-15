@@ -4,93 +4,95 @@ const User = require("../models/User");
 const userCtrl = {};
 
 
-roomCtrl.createRoom = async (req, res) => {
-  const { name, capacity, facility_uuid } = req.body;
+// userCtrl.createUser = async (req, res) => {
+//   const { user, mail, name, password, isAdmin } = req.body;
 
-  if (!name || !capacity || !facility_uuid) {
-    return res.send({ message: "El nombre, capacidad y facility_uuid son obligatorios." });
-  }
+//   if (!user || !mail || !name || !password) {
+//     return res.send({ message: "El nombre de usuario, mail, name y pass son obligatorios" });
+//   }
 
-  const newRoom = new Room(uuid.v4());
-  newRoom.set(req.body);
-
-  const result = await newRoom.create();
-
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al crear la sala" });
-  } else {
-    return res.json(result);
-  }
-};
+//   const newUser = new User(uuid.v4());
 
 
-roomCtrl.getRooms = async (req, res) => {
-  const room = new Room();
-  const result = await room.list();
+//   newRoom.set(req.body);
 
-  if (result.error) {
-    res.json({ ok: false, message: "Error al obtener las salas" });
-  } else {
-    res.json(result);
-  }
-};
+//   const result = await newRoom.create();
 
-
-roomCtrl.getRoom = async (req, res) => {
-  const uuid = req.params.uuid;
-
-  let room = new Room(uuid);
-  const result = await room.read();
-
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al obtener la sala" });
-  } else {
-    return res.json(result);
-  }
-};
+//   if (result.error) {
+//     return res.json({ ok: false, message: "Error al crear la sala" });
+//   } else {
+//     return res.json(result);
+//   }
+// };
 
 
-roomCtrl.getRoomsByFacility = async (req, res) => {
-  const facility_uuid = req.params.facility_uuid;
+// roomCtrl.getRooms = async (req, res) => {
+//   const room = new Room();
+//   const result = await room.list();
 
-  const room = new Room();
-  const filter = { 'facility_uuid': facility_uuid };
-  const result = await room.read(filter);
-
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al obtener las salas para la instalación" });
-  } else {
-    return res.json(result);
-  }
-};
+//   if (result.error) {
+//     res.json({ ok: false, message: "Error al obtener las salas" });
+//   } else {
+//     res.json(result);
+//   }
+// };
 
 
-roomCtrl.editRoom = async (req, res) => {
-  const uuid = req.params.uuid;
+// roomCtrl.getRoom = async (req, res) => {
+//   const uuid = req.params.uuid;
 
-  let room = new Room(uuid);
-  room.set(req.body);  
-  const result = await room.update();
+//   let room = new Room(uuid);
+//   const result = await room.read();
 
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al actualizar la sala" });
-  } else {
-    return res.json(result);
-  }
-};
+//   if (result.error) {
+//     return res.json({ ok: false, message: "Error al obtener la sala" });
+//   } else {
+//     return res.json(result);
+//   }
+// };
 
 
-roomCtrl.deleteRoom = async (req, res) => {
-  const uuid = req.params.uuid;
+// roomCtrl.getRoomsByFacility = async (req, res) => {
+//   const facility_uuid = req.params.facility_uuid;
 
-  let room = new Room(uuid);
-  const result = await room.delete();
+//   const room = new Room();
+//   const filter = { 'facility_uuid': facility_uuid };
+//   const result = await room.read(filter);
 
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al eliminar la sala" });
-  } else {
-    return res.json({ ok: true, message: "Sala eliminada correctamente" });
-  }
-};
+//   if (result.error) {
+//     return res.json({ ok: false, message: "Error al obtener las salas para la instalación" });
+//   } else {
+//     return res.json(result);
+//   }
+// };
 
-module.exports = roomCtrl;
+
+// roomCtrl.editRoom = async (req, res) => {
+//   const uuid = req.params.uuid;
+
+//   let room = new Room(uuid);
+//   room.set(req.body);  
+//   const result = await room.update();
+
+//   if (result.error) {
+//     return res.json({ ok: false, message: "Error al actualizar la sala" });
+//   } else {
+//     return res.json(result);
+//   }
+// };
+
+
+// roomCtrl.deleteRoom = async (req, res) => {
+//   const uuid = req.params.uuid;
+
+//   let room = new Room(uuid);
+//   const result = await room.delete();
+
+//   if (result.error) {
+//     return res.json({ ok: false, message: "Error al eliminar la sala" });
+//   } else {
+//     return res.json({ ok: true, message: "Sala eliminada correctamente" });
+//   }
+// };
+
+// module.exports = roomCtrl;
