@@ -67,7 +67,7 @@
       </v-btn>
       <FacilitySelectionModal 
         v-model:dialog="showFacilityModal"
-        :installations="installations"
+        :installations="installationsList"
         @next="handleSelectedFacility"
       />
       <RoomSelectionModal
@@ -82,7 +82,8 @@
       <DetailsSelectionModal
         v-model:dialog="showDetailsModal"
         :booking="booking"
-        :installations="installations"
+        :installations="installationsList"
+        :rooms="roomsList"
         @confirmBooking="handleBooking"
       />
     </div>
@@ -95,7 +96,7 @@ import RoomSelectionModal from './modals/RoomSelectionModal.vue';
 import DateSelectionModal from './modals/DateSelectionModal.vue';
 import DetailsSelectionModal from './modals/DetailsSelectionModal.vue';
 
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed, watch, onMounted } from 'vue';
 import CalendarHeader from './calendar-navigation/CalendarHeader.vue';
 import MonthView from './views/MonthView.vue';
 import WeekView from './views/WeekView.vue';
@@ -105,6 +106,7 @@ import ResourceFilter from './filters/ResourceFilter.vue';
 import { v4 as uuidv4 } from 'uuid';
 import CalendarViewSelector from './calendar-navigation/CalendarViewSelector.vue';
 import UserOnlySwitch from './filters/UserOnlySwitch.vue';
+import service from '../services/Service';
 
 // SHOW MODALS
 const showFacilityModal = ref(false);
@@ -120,12 +122,29 @@ const booking = reactive({
   time: null,
 });
 
+const installationsList = ref([]);
+const roomsList = ref([]);
+
+
 const availableRooms = ref([]); 
+
+onMounted(async () => {
+  await service.get('rooms').then((res) => {
+    roomsList.value = res.data;
+  });
+
+  await service.get('facilities').then((res) => {
+    installationsList.value = res.data;
+  });
+
+  console.log('Rooms: ', roomsList.value);
+  console.log('Installations: ', installationsList.value);
+});
 
 // HANDLERS
 function handleSelectedFacility(facility) {
   booking.facility = facility;
-  availableRooms.value = facility.rooms; 
+  availableRooms.value = roomsList.value.filter(room => room.facility_uuid === facility.uuid);
 
   showFacilityModal.value = false
   showRoomModal.value = true
@@ -152,12 +171,13 @@ function handleBooking(bookingData) {
   console.log('Reservas:', allEvents.value);
 }
 
+
 // PRUEBA
-const installations = ref([
-  { id: 'e1', name: 'Edificio 1', rooms:['Sala 01', 'Sala 02'] },
-  { id: 'e2', name: 'Edificio 2', rooms:['Sala 13', 'Sala 14'] },
-  { id: 'e3', name: 'Edificio 3', rooms:['Sala 25', 'Sala 26'] },
-]);
+// const installations = ref([
+//   { id: 'e1', name: 'Edificio 1', rooms:['Sala 01', 'Sala 02'] },
+//   { id: 'e2', name: 'Edificio 2', rooms:['Sala 13', 'Sala 14'] },
+//   { id: 'e3', name: 'Edificio 3', rooms:['Sala 25', 'Sala 26'] },
+// ]);
 
 // EVENTOS DE PRUEBA, mas adelante cargará las lista desde la base de datos
 const allEvents = ref([
