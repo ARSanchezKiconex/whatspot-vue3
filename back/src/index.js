@@ -1,4 +1,3 @@
-//archivo index.js
 require('dotenv').config();
 require('./connections/mysql');
 
