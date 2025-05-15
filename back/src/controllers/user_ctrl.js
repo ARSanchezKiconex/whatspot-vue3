@@ -26,30 +26,30 @@ const userCtrl = {};
 // };
 
 
-// roomCtrl.getRooms = async (req, res) => {
-//   const room = new Room();
-//   const result = await room.list();
+userCtrl.getUsers = async (req, res) => {
+  const user = new User();
+  const result = await user.list();
 
-//   if (result.error) {
-//     res.json({ ok: false, message: "Error al obtener las salas" });
-//   } else {
-//     res.json(result);
-//   }
-// };
+  if (result.error) {
+    res.json({ ok: false, message: "Error al obtener los usuarios" });
+  } else {
+    res.json(result);
+  }
+};
 
 
-// roomCtrl.getRoom = async (req, res) => {
-//   const uuid = req.params.uuid;
+userCtrl.getUser = async (req, res) => {
+  const uuid = req.params.uuid;
 
-//   let room = new Room(uuid);
-//   const result = await room.read();
+  let user = new User(uuid);
+  const result = await user.read();
 
-//   if (result.error) {
-//     return res.json({ ok: false, message: "Error al obtener la sala" });
-//   } else {
-//     return res.json(result);
-//   }
-// };
+  if (result.error) {
+    return res.json({ ok: false, message: "Error al obtener el usuario" });
+  } else {
+    return res.json(result);
+  }
+};
 
 
 // roomCtrl.getRoomsByFacility = async (req, res) => {
@@ -95,4 +95,4 @@ const userCtrl = {};
 //   }
 // };
 
-// module.exports = roomCtrl;
+module.exports = userCtrl;
