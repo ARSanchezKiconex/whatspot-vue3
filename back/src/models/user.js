@@ -2,8 +2,8 @@ const bcryptjs = require("bcryptjs");
 const mysqlAdapter = require("../utils/mysqlAdapter");
 
 class User {
-  constructor() {
-    this.uuid = "";
+  constructor(uuid) {
+    this.uuid = uuid;
     this.user = "";
     this.mail = "";
     this.name = "";

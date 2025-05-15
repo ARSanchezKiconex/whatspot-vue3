@@ -3,7 +3,7 @@ const Room = require("../models/Room");
 
 const roomCtrl = {};
 
-// Crear una nueva sala
+
 roomCtrl.createRoom = async (req, res) => {
   const { name, capacity, facility_uuid } = req.body;
 
@@ -12,7 +12,7 @@ roomCtrl.createRoom = async (req, res) => {
   }
 
   const newRoom = new Room(uuid.v4());
-  newRoom.set(req.body); // Asignamos los datos de la sala a la instancia de Room
+  newRoom.set(req.body);
 
   const result = await newRoom.create();
 
@@ -23,62 +23,33 @@ roomCtrl.createRoom = async (req, res) => {
   }
 };
 
-// Obtener una lista de todas las salas
 roomCtrl.getRooms = async (req, res) => {
+
+  console.log('legando a getRooms');
+
   const room = new Room();
   const result = await room.list();
 
   if (result.error) {
-    return res.json({ ok: false, message: "Error al obtener las salas" });
+    res.json({ ok: false, message: "Error al obtener las salas" });
   } else {
-    return res.json(result);
+    res.json(result);
   }
 };
 
-// Obtener detalles de una sala específica por su UUID
 roomCtrl.getRoom = async (req, res) => {
-  const uuid = req.params.uuid;
+  // const uuid = req.params.uuid;
 
-  let room = new Room(uuid, false);
-  const result = await room.read();
+  // let room = new Room(uuid);
+  // const result = await room.get(); // OJO CON EL GET Y LA FORMA DE SACAR LA SALA DE AQUI
 
-  if (result.error) {
+  // if (result.error) {
     return res.json({ ok: false, message: "Error al obtener la sala" });
-  } else {
-    return res.json(result);
-  }
+  // } else {
+  //   return res.json(result);
+  // }
 };
 
-// Editar los datos de una sala específica
-roomCtrl.editRoom = async (req, res) => {
-  const uuid = req.params.uuid;
-
-  let room = new Room(uuid, false);
-  room.set(req.body); // Actualizamos los datos de la sala
-  const result = await room.update();
-
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al actualizar la sala" });
-  } else {
-    return res.json(result);
-  }
-};
-
-// Eliminar una sala
-roomCtrl.deleteRoom = async (req, res) => {
-  const uuid = req.params.uuid;
-
-  let room = new Room(uuid, false);
-  const result = await room.delete();
-
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al eliminar la sala" });
-  } else {
-    return res.json({ ok: true, message: "Sala eliminada correctamente" });
-  }
-};
-
-// Obtener todas las salas de una instalación específica (por facility_uuid)
 roomCtrl.getRoomsByFacility = async (req, res) => {
   const facility_uuid = req.params.facility_uuid;
 
@@ -90,6 +61,33 @@ roomCtrl.getRoomsByFacility = async (req, res) => {
     return res.json({ ok: false, message: "Error al obtener las salas para la instalación" });
   } else {
     return res.json(result);
+  }
+};
+
+roomCtrl.editRoom = async (req, res) => {
+  const uuid = req.params.uuid;
+
+  let room = new Room(uuid);
+  room.set(req.body);  
+  const result = await room.update();
+
+  if (result.error) {
+    return res.json({ ok: false, message: "Error al actualizar la sala" });
+  } else {
+    return res.json(result);
+  }
+};
+
+roomCtrl.deleteRoom = async (req, res) => {
+  const uuid = req.params.uuid;
+
+  let room = new Room(uuid);
+  const result = await room.delete();
+
+  if (result.error) {
+    return res.json({ ok: false, message: "Error al eliminar la sala" });
+  } else {
+    return res.json({ ok: true, message: "Sala eliminada correctamente" });
   }
 };
 

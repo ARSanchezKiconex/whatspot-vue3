@@ -1,8 +1,8 @@
 const mysqlAdapter = require("../utils/mysqlAdapter");
 
 class Room {
-  constructor() {
-    this.uuid = "";
+  constructor(uuid) {
+    this.uuid = uuid;
     this.name = "";
     this.capacity = 0;
     this.facility_uuid = "";
@@ -15,7 +15,7 @@ class Room {
     return this;
   }
 
-  getData() {
+  get() {
     return {
       uuid: this.uuid,
       facility_uuid: this.facility_uuid,
@@ -40,19 +40,27 @@ class Room {
     return mysqlAdapter.query("DELETE FROM rooms WHERE uuid = ?", [this.uuid]);
   }
 
-  async list() {
-    const rows = await mysqlAdapter.query("SELECT uuid, facility_uuid, name, capacity FROM rooms", []);
-    return this.roomObjectList(rows);
+  async list(filter = {}) {
+    let query = "SELECT uuid, facility_uuid, name, capacity FROM rooms WHERE 1";
+    let params = [];
+
+    if (filter.facility_uuid) {
+      query += " AND facility_uuid = ?";
+      params.push(filter.facility_uuid);
+    }
+
+    const rows = await mysqlAdapter.query(query, params);
+    return rows;
   }
 
-  // Esta función es opcional, igual que en el modelo User
-  roomObjectList(dataList) {
-    return dataList.map(data => {
-      const room = new Room(data.uuid);
-      room.set(data);
-      return room;
-    });
-  }
+  // Este no por ahora
+  // roomObjectList(dataList) {
+  //   return dataList.map(data => {
+  //     const room = new Room(data.uuid);
+  //     room.set(data);
+  //     return room;
+  //   });
+  // }
 }
 
 module.exports = Room;

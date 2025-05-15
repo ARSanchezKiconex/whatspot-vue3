@@ -31,6 +31,7 @@ app.use(bodyParser.text({ type: 'text/plain' }));
 
 // ROUTES
 // rutas para interpretar las peticiones en la API
+app.use("/rooms", require("./routes/rooms"));
 
 
 module.exports = app;
