@@ -17,7 +17,7 @@ facilityCtrl.createFacility = async (req, res) => {
   const result = await newFacility.create();
 
   if (result.error) {
-    return res.json({ ok: false, message: "Error al crear la isntalacion" });
+    return res.json({ ok: false, message: "Error al crear la instalación" });
   } else {
     return res.json(result);
   }
@@ -58,23 +58,23 @@ facilityCtrl.editFacility = async (req, res) => {
   const result = await facility.update();
 
   if (result.error) {
-    return res.json({ ok: false, message: "Error al actualizar la isntalacion" });
+    return res.json({ ok: false, message: "Error al actualizar la instalación" });
   } else {
     return res.json(result);
   }
 };
 
 
-facilityCtrl.deleteRoom = async (req, res) => {
+facilityCtrl.deleteFacility = async (req, res) => {
   const uuid = req.params.uuid;
 
   let facility = new Facility(uuid);
   const result = await facility.delete();
 
   if (result.error) {
-    return res.json({ ok: false, message: "Error al eliminar la isntalacion" });
+    return res.json({ ok: false, message: "Error al eliminar la instalación" });
   } else {
-    return res.json({ ok: true, message: "Instalacion eliminada correctamente" });
+    return res.json({ ok: true, message: "Instalación eliminada correctamente" });
   }
 };
 
