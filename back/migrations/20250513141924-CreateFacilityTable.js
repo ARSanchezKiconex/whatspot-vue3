@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-    db.createTable('facility', {
+    db.createTable('facilities', {
     uuid: { type: 'varchar', length:36, primaryKey: true },
     name: { type: 'varchar', length: 100 },
   }, callback);

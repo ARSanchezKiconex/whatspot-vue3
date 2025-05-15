@@ -14,7 +14,7 @@ exports.up = async function(db) {
   const sql = `
     ALTER TABLE booking ADD CONSTRAINT fk_user FOREIGN KEY (user_uuid) REFERENCES users(uuid);
     ALTER TABLE booking ADD CONSTRAINT fk_room FOREIGN KEY (room_uuid) REFERENCES rooms(uuid);
-    ALTER TABLE rooms ADD CONSTRAINT fk_facility FOREIGN KEY (facility_uuid) REFERENCES facility(uuid);
+    ALTER TABLE rooms ADD CONSTRAINT fk_facilities FOREIGN KEY (facility_uuid) REFERENCES facilities(uuid);
   `;
 
   await db.runSql(sql);

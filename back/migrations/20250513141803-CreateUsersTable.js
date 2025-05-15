@@ -21,6 +21,7 @@ exports.up = function(db, callback) {
     mail: { type: 'varchar', length: 100, unique: true },
     name: { type: 'varchar', length: 100 },
     password: { type: 'varchar', length: 255 },
+    isAdmin: { type: 'boolean', defaultValue: false },
   }, callback);
   console.log("MIGRATE OK => Create users table");
 };
