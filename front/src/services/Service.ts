@@ -15,7 +15,6 @@ class Service {
         method: 'get',
         url: this.baseUrl + url,
         headers: {
-          'Authorization': 'Basic ',
           'Content-Type': 'application/json'
         },
         params
@@ -61,7 +60,6 @@ class Service {
         method: 'post',
         url: this.baseUrl + url,
         headers: {
-          'Authorization': 'Basic ',
           'Content-Type': 'application/json'
         },
         data
@@ -82,7 +80,6 @@ class Service {
         method: 'put',
         url: this.baseUrl + url,
         headers: {
-          'Authorization': 'Basic ',
           'Content-Type': 'application/json'
         },
         data
@@ -103,7 +100,6 @@ class Service {
         method: 'patch',
         url: this.baseUrl + url,
         headers: {
-          'Authorization': 'Basic ',
           'Content-Type': 'application/json'
         },
         data
@@ -124,7 +120,6 @@ class Service {
         method: 'delete',
         url: this.baseUrl + url,
         headers: {
-          'Authorization': 'Basic ',
           'Content-Type': 'application/json'
         }
       };
