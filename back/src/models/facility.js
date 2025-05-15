@@ -21,32 +21,36 @@ class Facility {
 
   async create() {
     const data = this.getData();
-    const result = await mysqlAdapter.query("INSERT INTO facility SET ?", data);
+    const result = await mysqlAdapter.query("INSERT INTO facilities SET ?", data);
     return result;
   }
 
   async update() {
     const data = this.getData();
-    const result = await mysqlAdapter.query("UPDATE facility SET ? WHERE uuid = ?", [data, this.uuid]);
+    const result = await mysqlAdapter.query("UPDATE facilities SET ? WHERE uuid = ?", [data, this.uuid]);
     return result;
   }
 
   async delete() {
-    return mysqlAdapter.query("DELETE FROM facility WHERE uuid = ?", [this.uuid]);
+    return mysqlAdapter.query("DELETE FROM facilities WHERE uuid = ?", [this.uuid]);
   }
 
   async list() {
-    const rows = await mysqlAdapter.query("SELECT uuid, name FROM facility", []);
-    return this.facilityObjectList(rows);
+    const rows = await mysqlAdapter.query("SELECT uuid, name FROM facilities", []);
+    return rows;
   }
 
-  facilityObjectList(dataList) {
-    return dataList.map(data => {
-      const facility = new Facility(data.uuid);
-      facility.set(data);
-      return facility;
-    });
-  }
+  read(filter = {}) {
+    let data = [];
+    let sql = "SELECT uuid, name FROM facilities WHERE uuid = ?";
+    if (Object.keys(filter).length === 0) {
+      sql += " AND uuid = ?";
+      data.push(this.uuid);
+    }
+
+    return mysqlAdapter.query(sql, data);
+  };
+
 }
 
 module.exports = Facility;

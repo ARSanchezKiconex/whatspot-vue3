@@ -40,27 +40,21 @@ class Room {
     return mysqlAdapter.query("DELETE FROM rooms WHERE uuid = ?", [this.uuid]);
   }
 
-  async list(filter = {}) {
-    let query = "SELECT uuid, facility_uuid, name, capacity FROM rooms WHERE 1";
-    let params = [];
-
-    if (filter.facility_uuid) {
-      query += " AND facility_uuid = ?";
-      params.push(filter.facility_uuid);
-    }
-
-    const rows = await mysqlAdapter.query(query, params);
+  async list() {
+    const rows = await mysqlAdapter.query("SELECT uuid, facility_uuid, name, capacity FROM rooms", []);
     return rows;
   }
 
-  // Este no por ahora
-  // roomObjectList(dataList) {
-  //   return dataList.map(data => {
-  //     const room = new Room(data.uuid);
-  //     room.set(data);
-  //     return room;
-  //   });
-  // }
+  read(filter = {}) {
+    let data = [];
+    let sql = "SELECT uuid, facility_uuid, name, capacity FROM rooms WHERE 1";
+    if (Object.keys(filter).length === 0) {
+      sql += " AND uuid = ?";
+      data.push(this.uuid);
+    }
+
+    return mysqlAdapter.query(sql, data);
+  };
 }
 
 module.exports = Room;

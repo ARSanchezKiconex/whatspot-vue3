@@ -59,16 +59,25 @@ class Booking {
 
   async list() {
     const rows = await mysqlAdapter.query('SELECT uuid, user_uuid, room_uuid, start_date, end_date, start_time, end_time, title, details FROM booking', []);
-    return this.bookingObjectList(rows);
+    return rows;
   }
 
-  bookingObjectList(dataList) {
-    return dataList.map(data => {
-      const booking = new Booking(data.uuid);
-      booking.set(data);
-      return booking;
-    });
-  }
+  read(filter = {}) {
+    let data = [];
+    let sql = "SELECT uuid, user_uuid, room_uuid, start_date, end_date, start_time, end_time, title, details FROM booking WHERE 1";
+    
+    if (Object.keys(filter).length === 0) {
+      sql += " AND uuid = ?";
+      data.push(this.uuid);
+    }
+
+    if (filter.user_uuid) {
+      sql += " AND user_uuid = ?";
+      data.push(filter.user_uuid);
+    }
+
+    return mysqlAdapter.query(sql, data);
+  };
 }
 
 module.exports = Booking;
