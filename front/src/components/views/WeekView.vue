@@ -38,7 +38,11 @@
               class="event-chip"
               :title="`${event.title} (${formatTime(event.start_time)} - ${formatTime(event.end_time)})`"
             >
+              {{ formatTime(event.start_time) }} - {{ formatTime(event.end_time) }}
+              <br />
               {{ event.title }}
+              <br />
+              {{ event.details }}
             </div>
           </div>
         </div>
