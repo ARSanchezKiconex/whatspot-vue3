@@ -7,21 +7,26 @@ const bookingCtrl = {};
 
 
 bookingCtrl.createBooking = async (req, res) => {
-  const { user_uuid, room_uuid, start_date, end_date, start_time, end_time, title, details } = req.body;
+  try {
+    const { user_uuid, room_uuid, start_date, end_date, start_time, end_time, title, details } = req.body;
 
-  if (!user_uuid || !room_uuid || !start_date || !end_date || !start_time || !end_time || !title ) {
-    return res.send({ message: "El usuario, sala, fecha y hora, y titulo son obligatorios." });
-  }
+    if (!user_uuid || !room_uuid || !start_date || !end_date || !start_time || !end_time || !title) {
+      return res.status(400).json({ message: "El usuario, sala, fecha y hora, y título son obligatorios." });
+    }
 
-  const newBooking = new Booking(uuid.v4());
-  newBooking.set(req.body);
+    const newBooking = new Booking(uuid.v4());
+    newBooking.set(req.body);
 
-  const result = await newBooking.create();
+    const result = await newBooking.create();
 
-  if (result.error) {
-    return res.json({ ok: false, message: "Error al crear la sala" });
-  } else {
-    return res.json(result);
+    if (result.error) {
+      return res.status(500).json({ ok: false, message: "Error al crear la reserva." });
+    } else {
+      return res.status(201).json(result);
+    }
+  } catch (error) {
+    console.error("❌ Error en createBooking:", error); 
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 

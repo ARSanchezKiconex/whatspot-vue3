@@ -2,7 +2,7 @@ const mysqlAdapter = require("../utils/mysqlAdapter");
 
 class Booking {
 
-  contructor(uuid) {
+  constructor(uuid) {
     this.uuid = uuid;
     this.user_uuid = "";
     this.room_uuid = "";
@@ -41,13 +41,13 @@ class Booking {
   }
   
   async create() {
-    const data = this.getData();
+    const data = this.get();
     const result = await mysqlAdapter.query("INSERT INTO booking set ? ", data);
     return result;
   }
 
   async update() {
-    const data = this.getData();
+    const data = this.get();
     const result = await mysqlAdapter.query("UPDATE booking set ? WHERE uuid = ?", [data, this.uuid]);
     return result;
   }
