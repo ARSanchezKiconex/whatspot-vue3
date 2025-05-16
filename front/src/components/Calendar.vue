@@ -44,7 +44,7 @@
           v-if="currentView === 'week'"
           :selected-date="selectedDate"
           :resources="filteredResources"
-          :events="allEvents"
+          :bookingsList="bookingsList"
         />
         <!-- <MonthView
           v-if="currentView === 'month'"
@@ -126,7 +126,6 @@ const installationsList = ref([]);
 const roomsList = ref([]);
 const bookingsList = ref([]);
 
-
 const availableRooms = ref([]); 
 
 onMounted(async () => {
@@ -138,20 +137,7 @@ onMounted(async () => {
     installationsList.value = res.data;
   });
 
-  await service.get('bookings').then((res) => {
-    bookingsList.value = res.data;
-  });
-
-  allEvents.value = bookingsList.value.map(b => ({
-    room: b.room_uuid,
-    startDate: b.start_date,
-    endDate: b.end_date,
-    startTime: b.start_time,
-    endTime: b.end_time,
-    title: b.title,
-    details: b.details,
-  }));
-
+  loadBookings();
 
   const facilityMap = new Map();
   installationsList.value.forEach(facility => {
@@ -215,25 +201,24 @@ function handleBooking(bookingData) {
 
 async function saveBooking(newBooking) {
 
-  await service.post('booking', newBooking).then((res) => {
-    console.log('Booking saved:', res.data);
+  await service.post('bookings', newBooking).then((res) => {
+    console.log('Booking saved:');
 
-    //volver a llamar al get
-  }).catch((error) => {
-    console.error('Error saving booking:', error);
+    loadBookings();
+
+  }).catch(() => {
+    console.error('Error saving booking:');
   })
-  
+}
+
+async function loadBookings() {
+
+  await service.get('bookings').then((res) => {
+    bookingsList.value = res.data;
+  });
 }
 
 
-// PRUEBA
-// const installations = ref([
-//   { id: 'e1', name: 'Edificio 1', rooms:['Sala 01', 'Sala 02'] },
-//   { id: 'e2', name: 'Edificio 2', rooms:['Sala 13', 'Sala 14'] },
-//   { id: 'e3', name: 'Edificio 3', rooms:['Sala 25', 'Sala 26'] },
-// ]);
-
-const allEvents = ref([]);
 const allResources = ref([]);
 
 // FILTERS
@@ -245,7 +230,6 @@ const viewOptions = [
   { value: 'month', label: 'Mes' },
   { value: 'diary', label: 'Agenda'}
 ];
-
 
 
 const todayDate = new Date();
@@ -283,17 +267,17 @@ const filteredEvents = computed(() => {
   if (visibleResourceIds.size === 0) {
     return [];
   }
-  return allEvents.value
-    .filter(event => visibleResourceIds.has(event.room))
+  return bookingsList.value
+    .filter(event => visibleResourceIds.has(event.room_uuid))
     .map(event => {
-      const start = new Date(`${event.startDate}T${event.startTime}`);
-      const end = new Date(`${event.endDate}T${event.endTime}`);
+      const start = new Date(`${event.start_date}T${event.start_time}`);
+      const end = new Date(`${event.end_date}T${event.end_time}`);
 
       return {
         ...event,
         start,
         end,
-        resourceId: event.room,
+        resourceId: event.room_uuid,
       };
     });
 });
@@ -305,7 +289,7 @@ function navigatePrevious() {
     d.setMonth(d.getMonth() - 1);
   } else if (currentView.value === 'week') {
     d.setDate(d.getDate() - 7);
-  } else { // day
+  } else {
     d.setDate(d.getDate() - 1);
   }
 

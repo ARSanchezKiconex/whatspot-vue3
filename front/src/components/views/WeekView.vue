@@ -34,9 +34,9 @@
           >
             <div
               v-for="event in getEventsForResourceAndDay(resource.id, day.date)"
-              :key="event.id"
+              :key="event.uuid"
               class="event-chip"
-              :title="`${event.title} (${formatTime(event.startTime)} - ${formatTime(event.endTime)})`"
+              :title="`${event.title} (${formatTime(event.start_time)} - ${formatTime(event.end_time)})`"
             >
               {{ event.title }}
             </div>
@@ -54,13 +54,13 @@ import { computed } from 'vue';
 const props = defineProps({
   selectedDate: Date,
   resources: Array,
-  events: Array,
+  bookingsList: Array,
 });
 
 // Calcular los días de la semana actual
 const weekDays = computed(() => {
   const startOfWeek = new Date(props.selectedDate);
-  const dayOfWeek = startOfWeek.getDay(); // 0=Sun, 1=Mon,...
+  const dayOfWeek = startOfWeek.getDay(); 
   const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Ajustar a Lunes
   startOfWeek.setDate(diff);
 
@@ -85,16 +85,16 @@ function getEventsForResourceAndDay(resourceId, date) {
   const dayEnd = new Date(date);
   dayEnd.setHours(23, 59, 59, 999);
 
-  return props.events
+  return props.bookingsList
     .filter(event => {
-      const eventDate = new Date(event.startDate);
+      const eventDate = new Date(event.start_date);
       return (
-        event.room === resourceId &&
+        event.room_uuid === resourceId &&
         eventDate >= dayStart &&
         eventDate <= dayEnd
       );
     })
-    .sort((a, b) => a.startTime.localeCompare(b.startTime));
+    .sort((a, b) => a.start_time.localeCompare(b.start_time));
 }
 
 function formatTime(time) {
