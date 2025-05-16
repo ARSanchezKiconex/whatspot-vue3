@@ -7,12 +7,12 @@
       <v-card-text>
         <v-list>
           <v-list-item
-            v-for="(room, index) in rooms"
-            :key="index"
+            v-for=" room in rooms"
+            :key="room.uuid"
             @click="selectRoom(room)"
             class="custom-list-item"
           >
-            <span class="custom-item-text">{{ room }}</span>
+            <span class="custom-item-text">{{ room.name }}</span>
           </v-list-item>
         </v-list>
       </v-card-text>

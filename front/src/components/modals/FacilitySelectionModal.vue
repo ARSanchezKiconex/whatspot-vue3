@@ -8,7 +8,7 @@
         <v-list>
           <v-list-item
             v-for="facility in installations"
-            :key="facility.id"
+            :key="facility.uuid"
             @click="selectFacility(facility)"
             class="custom-list-item"
           >

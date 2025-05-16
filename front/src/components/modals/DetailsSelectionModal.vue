@@ -9,22 +9,23 @@
           <v-row>
             <v-col cols="12">
               <v-select
-                v-model="form.facility"
-                :items="props.installations.map(i => i.name)"
-                label="Edificio"
-                return-object
-                @update:modelValue="onFacilityChange"
+                v-model="form.facility_uuid"
+                :items="props.installations"
                 item-title="name"
+                item-value="uuid"
+                label="Edificio"
+                @update:modelValue="onFacilityChange"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12">
               <v-select
-                v-model="form.room"
+                v-model="form.room_uuid"
                 :items="availableRooms"
+                item-title="name"
+                item-value="uuid"
                 label="Sala"
-                :disabled="!form.facility"
               />
             </v-col>
           </v-row>
@@ -98,11 +99,26 @@ const props = defineProps({
   booking: Object,
   dialog: Boolean,
   installations: Array,
+  rooms: Array
 })
+
+const emit = defineEmits(['update:dialog', 'confirmBooking'])
 
 const today = new Date().toISOString().substring(0, 10)
 const availableRooms = ref([])
-const timeIntervals = ref([])
+const timeIntervals = generateTimeIntervals()
+const dialog = ref(props.dialog)
+
+const form = ref({
+  facility_uuid: '',
+  room_uuid: '',
+  dateFrom: '',
+  timeFrom: '',
+  dateTo: '',
+  timeTo: '',
+  title: '',
+  details: ''
+})
 
 function generateTimeIntervals() {
   const intervals = []
@@ -116,27 +132,9 @@ function generateTimeIntervals() {
   return intervals
 }
 
-timeIntervals.value = generateTimeIntervals()
-
-const emit = defineEmits(['update:dialog', 'confirmBooking'])
-
-const dialog = ref(props.dialog)
-
-const form = ref({
-  facility: '',
-  room: '',
-  dateFrom: '',
-  timeFrom: '',
-  dateTo: '',
-  timeTo: '',
-  title: '',
-  details: ''
-})
-
-// Utilidad para sumar una hora
-function sumarUnaHora(hora) {
-  if (!hora) return ''
-  const [h, m] = hora.split(':').map(Number)
+function addOneHour(hour) {
+  if (!hour) return ''
+  const [h, m] = hour.split(':').map(Number)
   const nuevaHora = new Date()
   nuevaHora.setHours(h + 1)
   nuevaHora.setMinutes(m)
@@ -160,34 +158,10 @@ function isValidDateTimeRange() {
   return to >= from
 }
 
-function onFacilityChange(newFacilityName) {
-  const selectedFacility = props.installations.find(i => i.name === newFacilityName)
-  availableRooms.value = selectedFacility?.rooms || []
-  form.value.room = '' // borrar solo cuando cambia manualmente
+function onFacilityChange(newFacilityUuid) {
+  availableRooms.value = props.rooms.filter(room => room.facility_uuid === newFacilityUuid) || []
+  form.value.room_uuid = ''
 }
-
-watch(() => props.dialog, (val) => {
-  dialog.value = val
-
-  if (val) {
-    form.value.facility = props.booking.facility.name || ''
-
-    const selectedFacility = props.installations.find(i => i.name === form.value.facility)
-    availableRooms.value = selectedFacility?.rooms || []
-    form.value.room = props.booking.room || ''
-
-    form.value.dateFrom = toDateString(props.booking.date) || ''
-    form.value.timeFrom = props.booking.time || ''
-    form.value.dateTo = toDateString(props.booking.date) || ''
-    form.value.timeTo = sumarUnaHora(props.booking.time || '00:00')
-    form.value.title = ''
-    form.value.details = ''
-  }
-})
-
-watch(dialog, (val) => {
-  emit('update:dialog', val)
-})
 
 function confirmReservation() {
   if (!isValidDateTimeRange()) {
@@ -198,6 +172,27 @@ function confirmReservation() {
   emit('update:dialog', false)
   emit('confirmBooking', { ...form.value })
 }
+
+watch(() => props.dialog, (val) => {
+  dialog.value = val
+
+  if (val) {
+    form.value.facility_uuid = props.booking.facility.uuid || ''
+    form.value.room_uuid = props.booking.room.uuid || ''
+    form.value.dateFrom = toDateString(props.booking.date) || ''
+    form.value.timeFrom = props.booking.time || ''
+    form.value.dateTo = toDateString(props.booking.date) || ''
+    form.value.timeTo = addOneHour(props.booking.time || '00:00')
+    form.value.title = ''
+    form.value.details = ''
+
+    availableRooms.value = props.rooms.filter(room => room.facility_uuid === props.booking.facility.uuid)
+  }
+})
+
+watch(dialog, (val) => {
+  emit('update:dialog', val)
+})
 </script>
 
 <style scoped>
