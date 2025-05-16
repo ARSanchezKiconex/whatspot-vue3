@@ -167,8 +167,31 @@ function handleDateSelected(date) {
 
 //TODO: Cambiar a la función de reserva real
 function handleBooking(bookingData) {
-  allEvents.value.push(bookingData);
-  console.log('Reservas:', allEvents.value);
+  const newBooking = {
+
+    user_uuid: '5dec78cd-316b-11f0-acb2-00155d98b300',
+    room_uuid: bookingData.room_uuid,
+    start_date: bookingData.dateFrom,
+    end_date: bookingData.dateTo,
+    start_time: bookingData.timeFrom,
+    end_time: bookingData.timeTo,
+    title: bookingData.title,
+    details: bookingData.details
+  };
+
+  saveBooking(newBooking);
+}
+
+async function saveBooking(newBooking) {
+
+  await service.post('booking', newBooking).then((res) => {
+    console.log('Booking saved:', res.data);
+
+    //volver a llamar al get
+  }).catch((error) => {
+    console.error('Error saving booking:', error);
+  })
+  
 }
 
 
