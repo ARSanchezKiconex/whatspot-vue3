@@ -97,6 +97,7 @@ import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
   booking: Object,
+  bookingsList: Array,
   dialog: Boolean,
   installations: Array,
   rooms: Array

@@ -82,6 +82,7 @@
       <DetailsSelectionModal
         v-model:dialog="showDetailsModal"
         :booking="booking"
+        :bookingsList="bookingsList"
         :installations="installationsList"
         :rooms="roomsList"
         @confirmBooking="handleBooking"

@@ -7,12 +7,15 @@
       <v-card-text>
         <v-list>
           <v-list-item
-            v-for=" room in rooms"
+            v-for="room in rooms"
             :key="room.uuid"
             @click="selectRoom(room)"
             class="custom-list-item"
           >
-            <span class="custom-item-text">{{ room.name }}</span>
+            <div class="item-content">
+              <span class="custom-item-text">{{ room.name }}</span>
+              <span class="capacity-text">{{ room.capacity }} personas</span>
+            </div>
           </v-list-item>
         </v-list>
       </v-card-text>
@@ -48,8 +51,6 @@ function selectRoom(room) {
 
 <style scoped>
 .custom-list-item {
-  display: flex;
-  align-items: center;
   padding: 12px 16px;
   border-radius: 12px;
   background-color: #f5f5f5;
@@ -61,8 +62,20 @@ function selectRoom(room) {
   background-color: #e0e0e0;
 }
 
+.item-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
 .custom-item-text {
   font-size: 16px;
   color: #333;
+}
+
+.capacity-text {
+  font-size: 14px;
+  color: #666;
 }
 </style>
