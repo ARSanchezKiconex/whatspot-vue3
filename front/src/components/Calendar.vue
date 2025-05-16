@@ -9,12 +9,12 @@
           @next="navigateNext"
         />
       </v-card>
-      <v-card flat class="pa-2 mt-4">
+      <!-- <v-card flat class="pa-2 mt-4">
         <CalendarViewSelector
           v-model="currentView"
           :options="viewOptions"
         />
-      </v-card>
+      </v-card> -->
       <v-card flat class="pa-2 mt-4">
         <ResourceFilter
           :all-resources="allResources"
@@ -34,27 +34,27 @@
         @today="goToToday"
       />
       <div class="calendar-body">
-        <DayView
+        <!-- <DayView
           v-if="currentView === 'day'"
           :selected-date="selectedDate"
           :resources="filteredResources"
-          :events="filteredEvents"
-        />
+          :events="allEvents"
+        /> -->
         <WeekView
           v-if="currentView === 'week'"
           :selected-date="selectedDate"
           :resources="filteredResources"
           :events="allEvents"
         />
-        <MonthView
+        <!-- <MonthView
           v-if="currentView === 'month'"
           :selected-date="selectedDate"
           :year="selectedDate.getFullYear()"
           :month="selectedDate.getMonth()"
           @date-selected="selectDateAndSwitchView"
           :resources="filteredResources"
-          :events="filteredEvents"
-        />
+          :events="allEvents"
+        /> -->
       </div>
       <v-btn
         class="fab-add-event"
@@ -124,6 +124,7 @@ const booking = reactive({
 
 const installationsList = ref([]);
 const roomsList = ref([]);
+const bookingsList = ref([]);
 
 
 const availableRooms = ref([]); 
@@ -137,8 +138,38 @@ onMounted(async () => {
     installationsList.value = res.data;
   });
 
+  await service.get('bookings').then((res) => {
+    bookingsList.value = res.data;
+  });
+
+  allEvents.value = bookingsList.value.map(b => ({
+    room: b.room_uuid,
+    startDate: b.start_date,
+    endDate: b.end_date,
+    startTime: b.start_time,
+    endTime: b.end_time,
+    title: b.title,
+    details: b.details,
+  }));
+
+
+  const facilityMap = new Map();
+  installationsList.value.forEach(facility => {
+    facilityMap.set(facility.uuid, facility.name);
+  });
+
+  allResources.value = roomsList.value.map(room => {
+    return {
+      id: room.uuid,
+      name: room.name,
+      building: facilityMap.get(room.facility_uuid),
+    };
+  });
+
   console.log('Rooms: ', roomsList.value);
   console.log('Installations: ', installationsList.value);
+  console.log('Bookings: ', bookingsList.value);
+  console.log('Resources: ', allResources.value);
 });
 
 // HANDLERS
@@ -202,142 +233,8 @@ async function saveBooking(newBooking) {
 //   { id: 'e3', name: 'Edificio 3', rooms:['Sala 25', 'Sala 26'] },
 // ]);
 
-// EVENTOS DE PRUEBA, mas adelante cargará las lista desde la base de datos
-const allEvents = ref([
-{
-    id: 1,
-    facility: 'Edificio Principal',
-    room: 's1',
-    dateFrom: '2025-05-06',
-    timeFrom: '10:00',
-    dateTo: '2025-05-06',
-    timeTo: '11:30',
-    title: 'Reunión de equipo',
-    details: 'Planificación semanal'
-  },
-  {
-    id: 2,
-    facility: 'Edificio Principal',
-    room: 's2',
-    dateFrom: '2025-05-07',
-    timeFrom: '09:00',
-    dateTo: '2025-05-07',
-    timeTo: '11:00',
-    title: 'Presentación comercial',
-    details: 'Cliente importante visita'
-  },
-  {
-    id: 3,
-    facility: 'Anexo Norte',
-    room: 's3',
-    dateFrom: '2025-05-09',
-    timeFrom: '13:00',
-    dateTo: '2025-05-09',
-    timeTo: '14:30',
-    title: 'Llamada internacional',
-    details: 'Conferencia con socios'
-  },
-  {
-    id: 4,
-    facility: 'Anexo Norte',
-    room: 's4',
-    dateFrom: '2025-05-05',
-    timeFrom: '15:00',
-    dateTo: '2025-05-05',
-    timeTo: '17:00',
-    title: 'Sesión de brainstorming',
-    details: 'Ideas para nuevo producto'
-  },
-  {
-    id: 5,
-    facility: 'Edificio Sur',
-    room: 's5',
-    dateFrom: '2025-05-06',
-    timeFrom: '11:00',
-    dateTo: '2025-05-06',
-    timeTo: '12:45',
-    title: 'Revisión de KPIs',
-    details: 'Análisis mensual'
-  },
-  {
-    id: 6,
-    facility: 'Anexo Norte',
-    room: 's4',
-    dateFrom: '2025-05-08',
-    timeFrom: '14:00',
-    dateTo: '2025-05-08',
-    timeTo: '15:30',
-    title: 'Taller interno',
-    details: 'Capacitación del personal'
-  },
-  {
-    id: 7,
-    facility: 'Edificio Principal',
-    room: 's1',
-    dateFrom: '2025-05-09',
-    timeFrom: '08:30',
-    dateTo: '2025-05-09',
-    timeTo: '10:00',
-    title: 'Desayuno de trabajo',
-    details: 'Con proveedores'
-  },
-  {
-    id: 8,
-    facility: 'Edificio Principal',
-    room: 's2',
-    dateFrom: '2025-05-07',
-    timeFrom: '16:00',
-    dateTo: '2025-05-07',
-    timeTo: '17:30',
-    title: 'Formación sobre seguridad',
-    details: 'Normativas actualizadas'
-  },
-  {
-    id: 9,
-    facility: 'Anexo Norte',
-    room: 's3',
-    dateFrom: '2025-05-05',
-    timeFrom: '12:00',
-    dateTo: '2025-05-05',
-    timeTo: '13:30',
-    title: 'Reunión con dirección',
-    details: 'Actualización de proyectos'
-  },
-  {
-    id: 10,
-    facility: 'Edificio Sur',
-    room: 's5',
-    dateFrom: '2025-05-08',
-    timeFrom: '10:00',
-    dateTo: '2025-05-08',
-    timeTo: '12:00',
-    title: 'Evaluación de desempeño',
-    details: 'Trimestre 1'
-  },
-  {
-    id: 11,
-    facility: 'Edificio Principal',
-    room: 's2',
-    dateFrom: '2025-05-07',
-    timeFrom: '10:15',
-    dateTo: '2025-05-09',
-    timeTo: '11:00',
-    title: 'Reunión de ventas',
-    details: 'Estrategia para el próximo trimestre'
-  },
-  {
-    id: 12,
-    facility: 'Edificio Principal',
-    room: 's2',
-    dateFrom: '2025-05-07',
-    timeFrom: '11:15',
-    dateTo: '2025-05-06',
-    timeTo: '12:30',
-    title: 'Café con el equipo de marketing',
-    details: 'Nuevas campañas'
-  }
-]);
-
+const allEvents = ref([]);
+const allResources = ref([]);
 
 // FILTERS
 const showOnlyMine = ref(false);
@@ -349,19 +246,7 @@ const viewOptions = [
   { value: 'diary', label: 'Agenda'}
 ];
 
-// TODO: sustituir por lista de base de datos
-const allResources = ref([
-  { id: 's1', name: 'Sala A', building: 'Edificio Principal' },
-  { id: 's2', name: 'Sala B', building: 'Edificio Principal' },
-  { id: 's3', name: 'Despacho 1', building: 'Anexo Norte' },
-  { id: 's4', name: 'Sala Grande', building: 'Anexo Norte' },
-  { id: 's5', name: 'Auditorio', building: 'Edificio Sur' },
-  { id: 's6', name: 'Sala de Juntas', building: 'Edificio Sur' },
-  { id: 's7', name: 'Sala de Conferencias', building: 'Edificio Sur' },
-  { id: 's8', name: 'Sala de Capacitación', building: 'Edificio Sur' },
-  { id: 's9', name: 'Sala de Proyectos', building: 'Edificio Sur' },
-  { id: 's10', name: 'Sala de Innovación', building: 'Edificio Sur' },
-]);
+
 
 const todayDate = new Date();
 todayDate.setHours(0, 0, 0, 0);
@@ -398,9 +283,19 @@ const filteredEvents = computed(() => {
   if (visibleResourceIds.size === 0) {
     return [];
   }
-  return allEvents.value.filter(event =>
-    visibleResourceIds.has(event.resourceId)
-  );
+  return allEvents.value
+    .filter(event => visibleResourceIds.has(event.room))
+    .map(event => {
+      const start = new Date(`${event.startDate}T${event.startTime}`);
+      const end = new Date(`${event.endDate}T${event.endTime}`);
+
+      return {
+        ...event,
+        start,
+        end,
+        resourceId: event.room,
+      };
+    });
 });
 
 // NAVIGATION

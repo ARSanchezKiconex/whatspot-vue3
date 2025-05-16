@@ -36,7 +36,7 @@
               v-for="event in getEventsForResourceAndDay(resource.id, day.date)"
               :key="event.id"
               class="event-chip"
-              :title="`${event.title} (${formatTime(event.timeFrom)} - ${formatTime(event.timeTo)})`"
+              :title="`${event.title} (${formatTime(event.startTime)} - ${formatTime(event.endTime)})`"
             >
               {{ event.title }}
             </div>
@@ -85,19 +85,24 @@ function getEventsForResourceAndDay(resourceId, date) {
   const dayEnd = new Date(date);
   dayEnd.setHours(23, 59, 59, 999);
 
-  return props.events.filter(event => {
-    const eventDate = new Date(event.dateFrom); // ← conversión aquí
-    return (
-      event.room === resourceId &&
-      eventDate >= dayStart &&
-      eventDate <= dayEnd
-    );
-  });
+  return props.events
+    .filter(event => {
+      const eventDate = new Date(event.startDate);
+      return (
+        event.room === resourceId &&
+        eventDate >= dayStart &&
+        eventDate <= dayEnd
+      );
+    })
+    .sort((a, b) => a.startTime.localeCompare(b.startTime));
 }
-// Formatear hora
+
 function formatTime(time) {
   if (!time) return '';
-  if (typeof time === 'string') return time;
+  if (typeof time === 'string') {
+    const [hour, minute] = time.split(':');
+    return `${hour}:${minute}`;
+  }
   return time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 

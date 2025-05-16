@@ -38,3 +38,10 @@ INSERT INTO `users` (`uuid`, `user`, `mail`, `name`, `password`, `isAdmin`)
 VALUES ('c96175fa-316b-11f0-acb2-00155d98b300', 'jose', 'jose@hotmail.com', 'José Ponferrada Díaz', 'jose1234', '0');
 INSERT INTO `users` (`uuid`, `user`, `mail`, `name`, `password`, `isAdmin`) 
 VALUES ('fab2b79a-0d53-4244-8fb2-a48ab61e80f4', 'antonio', 'antonio@gmail.com', 'Antonio Fernández Espejo', 'antonio1234', '0');
+
+/* Meter una 1ª reserva(booking) */
+INSERT INTO `booking` (`uuid`, `user_uuid`, `room_uuid`, `start_date`, `end_date`, `start_time`, `end_time`, `title`, `details`) 
+VALUES ('8badfae8-3199-11f0-b35c-00155d98b300', 'c96175fa-316b-11f0-acb2-00155d98b300', '03ab2862-0a95-49d1-bdb8-132b72ec1d27', '2025-05-16', '2025-05-16', '10:00:00', '11:00:00', 'Resérvame esta', 'venid todos!');
+/* Meter una 2ª reserva(booking) */
+INSERT INTO `booking` (`uuid`, `user_uuid`, `room_uuid`, `start_date`, `end_date`, `start_time`, `end_time`, `title`, `details`) 
+VALUES ('516d26ce-66d6-472a-bc23-e43531d17ac3', 'fab2b79a-0d53-4244-8fb2-a48ab61e80f4', '03ab2862-0a95-49d1-bdb8-132b72ec1d27', '2025-05-16', '2025-05-16', '11:15:00', '13:15:00', 'Reunión importante', 'no faltes!');

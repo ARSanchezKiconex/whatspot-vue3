@@ -5,7 +5,7 @@
     <button @click="$emit('previous')" class="nav-button">
       <i class="fa-solid fa-caret-left"></i>
     </button>
-    <button @click="$emit('today')" class="nav-button today-button">Hoy</button> 
+    <button @click="$emit('today')" class="nav-button today-button">Semana actual</button> 
     <button @click="$emit('next')" class="nav-button">
       <i class="fa-solid fa-caret-right"></i>
     </button>
